@@ -20,31 +20,29 @@ var __dirname = dirname(__filename);
 app.use(express.json());
 
 app.get("/canvas/musicard", async (req, res) => {
-  try {
-    const {
-      nome,
-      autor,
-      logo,
-      thumb,
-      end
-    } = req.query;
+try {
+const {
+nome,
+autor,
+logo,
+end
+} = req.query;
 
-    // Verificação obrigatória
-    if (!nome || !autor || !logo || !thumb || !end) {
-      return res.status(400).send({
-        erro: true,
-        mensagem: "Campos obrigatórios: nome, autor, logo, thumb (fundo), end"
-      });
-    }
+const thumb = 'https://files.catbox.moe/kbvko4.jpeg';
 
-    const width = 900;
-    const height = 400;
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext("2d");
-
-    // Fundo
-    const background = await loadImage(thumb);
-    ctx.drawImage(background, 0, 0, width, height);
+// Verificação obrigatória
+if (!nome || !autor || !logo || !end) {
+return res.status(400).send({erro: true,
+mensagem: "Campos obrigatórios: nome, autor, logo e end"
+});
+}
+const width = 900;
+const height = 400;
+const canvas = createCanvas(width, height);
+const ctx = canvas.getContext("2d");
+// Fundo
+const background = await loadImage(thumb);
+ ctx.drawImage(background, 0, 0, width, height);
 
     // Camada escura transparente
     ctx.fillStyle = `rgba(0, 0, 0, 0.5)`;
@@ -119,12 +117,12 @@ ctx.fill();
 
     // Tempos
     ctx.fillStyle = "#fff";
-    ctx.font = "22px Orbitron";
-    ctx.fillText("0:00", barX, barY + 30);
-    ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 30);
+    ctx.font = "20px Orbitron";
+    ctx.fillText("0:00", barX, barY + 28);
+    ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 28);
 
-    res.setHeader("Content-Type", "image/png");
-    canvas.createPNGStream().pipe(res);
+  res.setHeader("Content-Type", "image/png");
+  canvas.createPNGStream().pipe(res);
 
   } catch (e) {
     res.status(500).send({ erro: true, mensagem: e.message });
