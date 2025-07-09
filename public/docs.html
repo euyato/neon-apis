@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Neon API's gratuitas</title>
+<meta property="og:description" content="Plataforma de APIs gratuitas da Neon com diversas rotas prontas para integrar com bots de WhatsApp, sistemas e aplicativos. 100% grátis, fácil de usar e sempre atualizada!" />
+<meta property="og:image" content="https://files.catbox.moe/u4j0he.png" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(to bottom, #001f3f, #0074D9);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      color: #e0e0e0;
+      padding: 15px 20px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      box-shadow: 0 0 15px #ffffff22;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid #00ffff55;
+      text-shadow: 0 0 5px #ffffff22;
+    }
+
+    .main {
+      padding: 110px 20px 40px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
+    }
+
+    .neon-title {
+      color: #e0e0e0;
+      text-shadow: 0 0 6px #ffffff33;
+    }
+
+    .neon-select {
+      appearance: none; 
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid #00ffff;
+      color: #e0e0e0;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      outline: none;
+      box-shadow: 0 0 10px #00ffff55;
+      transition: 0.3s;
+      text-align: center;
+      backdrop-filter: blur(6px);
+      margin-bottom: 30px;
+    }
+
+    .neon-select:focus {
+      box-shadow: 0 0 15px #00ffffaa;
+      border-color: #e0e0e0;
+    }
+
+    .neon-select option {
+      background-color: rgba(0, 0, 0, 0.9);
+      color: #e0e0e0;
+    }
+
+    .rota {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px #00ffff55;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rota h5 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .btn-get {
+      background: transparent;
+      color: #e0e0e0;
+      border: 1px solid #00ffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn-get:hover {
+      background: #00ffff;
+      color: #000;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(3px);
+      z-index: 999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid #00ffff;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #00ffffaa;
+      padding: 25px;
+      max-width: 90%;
+      width: 350px;
+      text-align: center;
+      color: white;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .popup h5 {
+      margin-bottom: 15px;
+    }
+
+    .input-like {
+      background: rgba(200, 200, 200, 0.2);
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      margin-bottom: 15px;
+      border: 1px solid #666;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #ccc;
+      margin-top: auto;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">Neon - Home</div>
+
+  <div class="main">
+    <h4 class="neon-title">Categorias</h4>
+    <select class="neon-select" id="categoria" onchange="filtrarCategoria()">
+      <option value="downloads">Downloads</option>
+      <option value="pesquisa">Pesquisas</option>
+      <option value="stickers">Stickers</option>
+      <option value="logos">Logos imagem</option>
+      <option value="gpt">Inteligências</option>
+      <option value="plaq">Plaquinhas</option>
+      <option value="adulto">Adultos</option>
+      <option value="outros">Outros</option>
+    </select>
+ 
+      <div class="rota downloads">
+      <h5>Youtube Pesquisa</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/youtube-search?query=matue%201993')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>Youtube Audio</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/youtube-audio?query=matue%201993')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>Youtube Audio Url</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/yt-mp3?url=https://youtube.com/watch?v=Wxwa4eZs-GA')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>Youtube Video Url</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/yt-mp4?url=https://youtube.com/watch?v=Wxwa4eZs-GA')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>TikTok Video</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/tiktok-video?q=https://vm.tiktok.com/ZMSeJNvtq')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>Instagram Video</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/insta-video?url=https://www.instagram.com/reel/DGTB96NS48p')">GET</button>
+    </div>
+        <div class="rota downloads">
+      <h5>Instagram Audio</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/insta-audio?url=https://www.instagram.com/reel/DDSMDmrvYEg')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>Facebook Video</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/facebook?url=https://www.facebook.com/share/r/15m7vWNxTx')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>Pinterest Imagem</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/pinterest?q=naruto')">GET</button>
+    </div>
+    <div class="rota downloads">
+      <h5>Pinterest Video</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/pin-video?url=https://pin.it/2a3paLt9X')">GET</button>
+    </div>
+    
+    <div class="rota pesquisa">
+      <h5>Youtube Mix</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/youtube-mix?query=matue')">GET</button>
+    </div>
+    <div class="rota pesquisa">
+      <h5>Playstore Apps</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/playstore?query=jogos')">GET</button>
+    </div>
+    <div class="rota pesquisa">
+      <h5>Tiktok Pesquisa</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/tiktok-search?query=edit%20neymar')">GET</button>
+    </div>
+    <div class="rota pesquisa">
+      <h5>Filmes Pesquisa</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/filmes?nome=king%20kong')">GET</button>
+    </div>
+    <div class="rota pesquisa">
+      <h5>Series Pesquisa</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/series?nome=breaking%20bad')">GET</button>
+    </div>
+  
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Aleatorias</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-aleatoria')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Roblox</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-roblox')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Raiva</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-raiva')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Engraçadas</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-engracada')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Animais</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-animais')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Desenhos</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-desenho')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Emojis</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-emoji')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Coreana</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-coreana')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Animes</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-anime')">GET</button>
+    </div>
+    <div class="rota stickers hidden">
+      <h5>Figurinhas Flork</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/figu-flork')">GET</button>
+    </div>
+  
+    <div class="rota logos hidden">
+      <h5>Logo Cartoon</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/logo-cartoon?texto=neon%20apis')">GET</button>
+    </div>
+    <div class="rota logos hidden">
+      <h5>Logo Write</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/logo-write?texto=neon%20apis')">GET</button>
+    </div>
+
+    <div class="rota gpt hidden">
+      <h5>Gemini</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/gemini?texto=bom%20dia')">GET</button>
+    </div>
+    <div class="rota gpt hidden">
+      <h5>Gemini Pro</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/gemini-pro?texto=velocidade%20da%20luz')">GET</button>
+    </div>
+    
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 1</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq1?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 2</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq2?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 3</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq3?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 4</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq4?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 5</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq5?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 6</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq6?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 7</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq7?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 8</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq8?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 9</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq9?texto=neon')">GET</button>
+    </div>
+    <div class="rota plaq hidden">
+      <h5>Plaquinha opcão 10</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/plaq10?texto=neon')">GET</button>
+    </div>
+    
+    <div class="rota adulto hidden">
+      <h5>Xvideos Pesquisa</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/xvideos?query=lesbica')">GET</button>
+    </div>
+    <div class="rota adulto hidden">
+      <h5>Pussy Pesquisa</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/tubepussy?query=lesbica')">GET</button>
+    </div>
+    <div class="rota adulto hidden">
+      <h5>Pornhub Blogue</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/porn-blog?query=lesbica')">GET</button>
+    </div>
+    
+    <div class="rota outros hidden">
+      <h5>Dicionário</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/dicionario?texto=amor')">GET</button>
+    </div>
+    <div class="rota outros hidden">
+      <h5>Gerador Fontes</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/fazernick?nome=neon')">GET</button>
+    </div>
+    <div class="rota outros hidden">
+      <h5>Pensador Frases</h5>
+      <button class="btn-get" onclick="abrirPopup('/api/pensador?text=amor')">GET</button>
+    </div>
+    <div class="rota outros hidden">
+    <h5>Imagens Avatar</h5>
+    <button class="btn-get" onclick="abrirPopup('/api/avatares')">GET</button>
+    </div>
+    <div class="rota outros hidden">
+    <h5>Print Site</h5>
+    <button class="btn-get" onclick="abrirPopup('/api/print-site?url=https://neon-apis.shop')">GET</button>
+    </div>
+
+    <footer>
+      Feito por zenomods - 2025
+    </footer>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="fecharPopup()">
+    <div class="popup" onclick="event.stopPropagation()">
+      <h5>Rota completa:</h5>
+      <div class="input-like" id="rotaText"></div>
+      <button class="btn btn-primary" onclick="acessar()">Acessar</button>
+      <button class="btn btn-secondary" onclick="copiar()">Copiar</button>
+    </div>
+  </div>
+
+  <script>
+    let rotaAtual = '';
+
+    function abrirPopup(caminho) {
+      rotaAtual = caminho;
+      const dominio = `${window.location.origin}`;
+      document.getElementById("rotaText").textContent = `${dominio}${caminho}`;
+      document.getElementById("overlay").style.display = 'flex';
+    }
+
+    function fecharPopup() {
+      document.getElementById("overlay").style.display = 'none';
+    }
+
+    function acessar() {
+      const dominio = `${window.location.origin}`;
+      window.open(`${dominio}${rotaAtual}`, '_blank');
+    }
+
+    function copiar() {
+      const dominio = `${window.location.origin}`;
+      const full = `${dominio}${rotaAtual}`;
+      navigator.clipboard.writeText(full);
+      alert("Rota copiada!");
+    }
+
+    function filtrarCategoria() {
+      const cat = document.getElementById("categoria").value;
+      document.querySelectorAll(".rota").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(`.rota.${cat}`).forEach(el => el.classList.remove("hidden"));
+    }
+
+    window.onload = filtrarCategoria;
+  </script>
+
+</body>
+</html>

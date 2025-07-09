@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro 404 - Apikey Inválida</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #000; /* Fundo preto inicial para o vídeo */
+            font-family: 'Poppins', sans-serif;
+            color: rgb(20, 20, 20); /* Texto quase preto */
+            overflow: hidden;
+            position: relative; /* Necessário para o vídeo de fundo */
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2; /* Coloca o vídeo atrás do conteúdo */
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Overlay escuro para melhorar a legibilidade */
+            z-index: -1; /* Coloca o overlay acima do vídeo */
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 65, 108, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1; /* Garante que o conteúdo fique acima do vídeo e overlay */
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            position: relative;
+            color: rgb(20, 20, 20); /* Texto quase preto */
+            text-shadow: 0 0 10px rgba(255, 65, 108, 0.8);
+            animation: glitch 1.5s infinite alternate;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 4px 4px 10px #ff416c, -4px -4px 10px #ff4b2b; }
+            50% { text-shadow: -4px -4px 10px #ff416c, 4px 4px 10px #ff4b2b; }
+            100% { text-shadow: 4px -4px 10px #ff416c, -4px 4px 10px #ff4b2b; }
+        }
+
+        p {
+            font-size: 1.4em;
+            margin: 10px 0 20px;
+            opacity: 0.8;
+            color: rgb(20, 20, 20); /* Texto quase preto */
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 8px;
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 10px rgba(255, 65, 108, 0.8);
+        }
+
+        .back-link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(255, 65, 108, 0.9);
+        }
+
+        /* Animação de partículas */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particles span {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(3px);
+            border-radius: 50%;
+            animation: moveUp linear infinite;
+        }
+
+        @keyframes moveUp {
+            from { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            to { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <audio autoplay loop>
+        <source src="https://i.imgur.com/5W50xm9.mp4">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    <video class="video-background" autoplay muted loop>
+        <source src="https://i.imgur.com/urxKBK5.mp4" type="video/mp4">
+        Seu navegador não suporta vídeos HTML5.
+    </video>
+
+    <div class="video-overlay"></div>
+
+    <div class="particles">
+        <span style="left: 5%; animation-duration: 12s; animation-delay: 0s;"></span>
+        <span style="left: 25%; animation-duration: 18s; animation-delay: 1s;"></span>
+        <span style="left: 50%; animation-duration: 20s; animation-delay: 2s;"></span>
+        <span style="left: 75%; animation-duration: 15s; animation-delay: 3s;"></span>
+        <span style="left: 95%; animation-duration: 22s; animation-delay: 4s;"></span>
+    </div>
+
+    <div class="container">
+        <h1>Erro 404</h1>
+        <h2>Apikey Inválida</h2>
+        <a href="/" class="back-link">Voltar ao site</a>
+    </div>
+
+</body>
+</html>
