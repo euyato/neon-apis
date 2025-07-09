@@ -118,8 +118,8 @@ ctx.fill();
     // Tempos
     ctx.fillStyle = "#fff";
     ctx.font = "20px Orbitron";
-    ctx.fillText("0:00", barX, barY + 28);
-    ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 28);
+    ctx.fillText("0:00", barX, barY + 35);
+    ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 35);
 
   res.setHeader("Content-Type", "image/png");
   canvas.createPNGStream().pipe(res);
