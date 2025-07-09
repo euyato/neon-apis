@@ -55,9 +55,9 @@ app.get("/canvas/musicard", async (req, res) => {
 
     // Logo redondo (imagem de perfil)
     const logoImg = await loadImage(logo);
-    const logoSize = 160;
-    const logoX = 40;
-    const logoY = 45;
+    const logoSize = 180;
+    const logoX = 50;
+    const logoY = 100;
 
     ctx.save();
     ctx.beginPath();
@@ -69,19 +69,19 @@ app.get("/canvas/musicard", async (req, res) => {
 
     // Título da música
     ctx.fillStyle = "#fff";
-    ctx.font = "30px Orbitron";
-    ctx.fillText(nome, 230, 90);
+    ctx.font = "36px Orbitron";
+    ctx.fillText(nome, 270, 140);
 
     // Nome do autor
-    ctx.font = "20px Orbitron";
+    ctx.font = "24px Orbitron";
     ctx.fillStyle = "#ccc";
-    ctx.fillText(autor, 230, 125);
+    ctx.fillText(autor, 270, 180);
 
     // Barra de progresso
-    const barX = 230;
-    const barY = 160;
-    const barWidth = 500;
-    const barHeight = 10;
+    const barX = 270;
+    const barY = 250;
+    const barWidth = 580;
+    const barHeight = 15;
     const progress = Math.max(0, Math.min(100, parseFloat(progresso)));
 
     // Barra base
