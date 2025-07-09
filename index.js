@@ -127,7 +127,7 @@ app.get("/canvas/musicard", async (req, res) => {
     const barY = boxY + 130;
     const barWidth = boxWidth - 40;
     const barHeight = 14;
-    const progresso = 30;
+    const progresso = 45;
 
     // Barra base
     ctx.fillStyle = "#888";
@@ -140,7 +140,7 @@ app.get("/canvas/musicard", async (req, res) => {
     // Tempos
     ctx.fillStyle = "#fff";
     ctx.font = "20px Orbitron";
-    ctx.fillText("0:35", barX, barY + 40);
+    ctx.fillText("0:45", barX, barY + 40);
     ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 40);
 
     res.setHeader("Content-Type", "image/png");
