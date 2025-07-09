@@ -26,10 +26,10 @@ app.get("/canvas/musicard", async (req, res) => {
       autor,
       logo,
       thumb,
-      end,
+      end
     } = req.query;
 
-    // Verificação
+    // Verificação obrigatória
     if (!nome || !autor || !logo || !thumb || !end) {
       return res.status(400).send({
         erro: true,
@@ -37,7 +37,6 @@ app.get("/canvas/musicard", async (req, res) => {
       });
     }
 
-    const { createCanvas, loadImage } = require("canvas");
     const width = 900;
     const height = 400;
     const canvas = createCanvas(width, height);
@@ -47,30 +46,16 @@ app.get("/canvas/musicard", async (req, res) => {
     const background = await loadImage(thumb);
     ctx.drawImage(background, 0, 0, width, height);
 
-    // Opacidade preta
+    // Camada escura transparente
     ctx.fillStyle = `rgba(0, 0, 0, 0.5)`;
     ctx.fillRect(0, 0, width, height);
 
-    // Caixa transparente atrás das infos
-    ctx.fillStyle = "rgba(30,30,30,0.6)";
-    ctx.fillRect(230, 90, 620, 180);
-
-    // Logo com borda
+    // Logo com borda arredondada
     const logoImg = await loadImage(logo);
     const logoSize = 180;
     const logoX = 50;
-    const logoY = 100;
+    const logoY = 110;
 
-    // Borda cinza escura
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 4, 0, Math.PI * 2); // borda +4px
-    ctx.fillStyle = "#333"; 
-    ctx.fill();
-    ctx.closePath();
-    ctx.restore();
-
-    // Logo redondo
     ctx.save();
     ctx.beginPath();
     ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
@@ -79,33 +64,54 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Textos maiores
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 44px Orbitron";
-    ctx.fillText(nome, 260, 140);
+    // Borda cinza escuro na logo
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.stroke();
 
-    ctx.font = "28px Orbitron";
+    // Caixa cinza escuro transparente atrás de tudo
+    const boxX = 250;
+    const boxY = 95;
+    const boxWidth = 600;
+    const boxHeight = 210;
+
+    ctx.fillStyle = "rgba(30, 30, 30, 0.6)";
+    ctx.beginPath();
+    ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 20); // canto arredondado
+    ctx.fill();
+
+    // Texto: Nome da música
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 40px Orbitron";
+    ctx.fillText(nome, boxX + 20, boxY + 55);
+
+    // Texto: Autor
     ctx.fillStyle = "#ccc";
-    ctx.fillText(autor, 260, 185);
+    ctx.font = "28px Orbitron";
+    ctx.fillText(autor, boxX + 20, boxY + 95);
 
     // Barra de progresso
-    const barX = 260;
-    const barY = 240;
-    const barWidth = 580;
-    const barHeight = 12;
-    const progress = 50;
+    const barX = boxX + 20;
+    const barY = boxY + 130;
+    const barWidth = boxWidth - 40;
+    const barHeight = 14;
+    const progresso = 50;
 
+    // Barra base
     ctx.fillStyle = "#888";
     ctx.fillRect(barX, barY, barWidth, barHeight);
 
+    // Progresso preenchido
     ctx.fillStyle = "#fff";
-    ctx.fillRect(barX, barY, (barWidth * progress) / 100, barHeight);
+    ctx.fillRect(barX, barY, (barWidth * progresso) / 100, barHeight);
 
     // Tempos
     ctx.fillStyle = "#fff";
-    ctx.font = "20px Orbitron";
-    ctx.fillText("0:00", barX, barY + 25);
-    ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 25);
+    ctx.font = "22px Orbitron";
+    ctx.fillText("0:00", barX, barY + 30);
+    ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 30);
 
     res.setHeader("Content-Type", "image/png");
     canvas.createPNGStream().pipe(res);
@@ -114,6 +120,22 @@ app.get("/canvas/musicard", async (req, res) => {
     res.status(500).send({ erro: true, mensagem: e.message });
   }
 });
+
+// Função para cantos arredondados
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+  const radius = typeof r === "number" ? { tl: r, tr: r, br: r, bl: r } : r;
+  this.beginPath();
+  this.moveTo(x + radius.tl, y);
+  this.lineTo(x + w - radius.tr, y);
+  this.quadraticCurveTo(x + w, y, x + w, y + radius.tr);
+  this.lineTo(x + w, y + h - radius.br);
+  this.quadraticCurveTo(x + w, y + h, x + w - radius.br, y + h);
+  this.lineTo(x + radius.bl, y + h);
+  this.quadraticCurveTo(x, y + h, x, y + h - radius.bl);
+  this.lineTo(x, y + radius.tl);
+  this.quadraticCurveTo(x, y, x + radius.tl, y);
+  this.closePath();
+};
 
 app.get('/api/pinterest', async (req, res) => {  
 var q = req.query.q;
