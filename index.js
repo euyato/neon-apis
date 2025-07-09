@@ -127,7 +127,7 @@ app.get("/canvas/musicard", async (req, res) => {
     const barY = boxY + 130;
     const barWidth = boxWidth - 40;
     const barHeight = 14;
-    const progresso = 20;
+    const progresso = 30;
 
     // Barra base
     ctx.fillStyle = "#888";
