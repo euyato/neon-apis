@@ -40,8 +40,8 @@ app.get("/canvas/musicard", async (req, res) => {
       });
     }
 
-    const width = 800;
-    const height = 250;
+    const width = 900;
+    const height = 400;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
