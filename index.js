@@ -131,22 +131,6 @@ ctx.fill();
   }
 });
 
-// Função para cantos arredondados
-CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-  const radius = typeof r === "number" ? { tl: r, tr: r, br: r, bl: r } : r;
-  this.beginPath();
-  this.moveTo(x + radius.tl, y);
-  this.lineTo(x + w - radius.tr, y);
-  this.quadraticCurveTo(x + w, y, x + w, y + radius.tr);
-  this.lineTo(x + w, y + h - radius.br);
-  this.quadraticCurveTo(x + w, y + h, x + w - radius.br, y + h);
-  this.lineTo(x + radius.bl, y + h);
-  this.quadraticCurveTo(x, y + h, x, y + h - radius.bl);
-  this.lineTo(x, y + radius.tl);
-  this.quadraticCurveTo(x, y, x + radius.tl, y);
-  this.closePath();
-};
-
 app.get('/api/pinterest', async (req, res) => {  
 var q = req.query.q;
 
