@@ -78,9 +78,19 @@ app.get("/canvas/musicard", async (req, res) => {
     const boxHeight = 210;
 
     ctx.fillStyle = "rgba(30, 30, 30, 0.6)";
-    ctx.beginPath();
-    ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 20); // canto arredondado
-    ctx.fill();
+  const radius = 20;
+  ctx.beginPath();
+  ctx.moveTo(boxX + radius, boxY);
+  ctx.lineTo(boxX + boxWidth - radius, boxY);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+  ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+  ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+ctx.lineTo(boxX + radius, boxY + boxHeight);
+ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+ctx.lineTo(boxX, boxY + radius);
+ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+ctx.closePath();
+ctx.fill();
 
     // Texto: Nome da música
     ctx.fillStyle = "#fff";
