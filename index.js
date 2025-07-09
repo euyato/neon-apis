@@ -19,30 +19,43 @@ var __dirname = dirname(__filename);
 // Middleware para JSON
 app.use(express.json());
 
-app.get("/canvas/musicard", async (req, res) => {
-try {
-const {
-nome,
-autor,
-logo,
-end
-} = req.query;
+app.get("/canvas/musicard", async (req, res) => { 
+  try {
+    const { nome, autor, logo, end } = req.query;
 
-const thumb = 'https://files.catbox.moe/kbvko4.jpeg';
+    const thumb = 'https://files.catbox.moe/kbvko4.jpeg';
 
-// Verificação obrigatória
-if (!nome || !autor || !logo || !end) {
-return res.status(400).send({erro: true,
-mensagem: "Campos obrigatórios: nome, autor, logo e end"
-});
-}
-const width = 900;
-const height = 400;
-const canvas = createCanvas(width, height);
-const ctx = canvas.getContext("2d");
-// Fundo
-const background = await loadImage(thumb);
- ctx.drawImage(background, 0, 0, width, height);
+    // Verificação obrigatória
+    if (!nome || !autor || !logo || !end) {
+      return res.status(400).send({
+        erro: true,
+        mensagem: "Campos obrigatórios: nome, autor, logo e end"
+      });
+    }
+
+    const width = 900;
+    const height = 400;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    // Função para truncar o texto, se necessário
+    function truncateText(text, maxWidth, font) {
+      const tempCanvas = createCanvas(1, 1);
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx.font = font;
+
+      // Verificar o tamanho do texto e truncar se for maior que o limite
+      let truncatedText = text;
+      while (tempCtx.measureText(truncatedText).width > maxWidth) {
+        truncatedText = truncatedText.slice(0, -1);
+      }
+
+      return truncatedText + (text !== truncatedText ? '...' : '');
+    }
+
+    // Fundo
+    const background = await loadImage(thumb);
+    ctx.drawImage(background, 0, 0, width, height);
 
     // Camada escura transparente
     ctx.fillStyle = `rgba(0, 0, 0, 0.5)`;
@@ -76,29 +89,38 @@ const background = await loadImage(thumb);
     const boxHeight = 210;
 
     ctx.fillStyle = "rgba(30, 30, 30, 0.6)";
-  const radius = 20;
-  ctx.beginPath();
-  ctx.moveTo(boxX + radius, boxY);
-  ctx.lineTo(boxX + boxWidth - radius, boxY);
-  ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
-  ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
-  ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
-ctx.lineTo(boxX + radius, boxY + boxHeight);
-ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
-ctx.lineTo(boxX, boxY + radius);
-ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
-ctx.closePath();
-ctx.fill();
+    const radius = 20;
+    ctx.beginPath();
+    ctx.moveTo(boxX + radius, boxY);
+    ctx.lineTo(boxX + boxWidth - radius, boxY);
+    ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+    ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+    ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+    ctx.lineTo(boxX + radius, boxY + boxHeight);
+    ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+    ctx.lineTo(boxX, boxY + radius);
+    ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ajuste para o título
+    const titleFont = "bold 40px Orbitron";
+    const maxTitleWidth = boxWidth - 40; // Largura máxima para o título
+    const truncatedNome = truncateText(nome, maxTitleWidth, titleFont);
 
     // Texto: Nome da música
     ctx.fillStyle = "#fff";
-    ctx.font = "bold 40px Orbitron";
-    ctx.fillText(nome, boxX + 20, boxY + 55);
+    ctx.font = titleFont;
+    ctx.fillText(truncatedNome, boxX + 20, boxY + 55);
 
     // Texto: Autor
+    const authorFont = "28px Orbitron";
+    const maxAuthorWidth = boxWidth - 40; // Largura máxima para o autor
+    const truncatedAutor = truncateText(autor, maxAuthorWidth, authorFont);
+
     ctx.fillStyle = "#ccc";
-    ctx.font = "28px Orbitron";
-    ctx.fillText(autor, boxX + 20, boxY + 95);
+    ctx.font = authorFont;
+    ctx.fillText(truncatedAutor, boxX + 20, boxY + 95);
 
     // Barra de progresso
     const barX = boxX + 20;
@@ -121,9 +143,8 @@ ctx.fill();
     ctx.fillText("0:00", barX, barY + 40);
     ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 40);
 
-  res.setHeader("Content-Type", "image/png");
-  canvas.createPNGStream().pipe(res);
-
+    res.setHeader("Content-Type", "image/png");
+    canvas.createPNGStream().pipe(res);
   } catch (e) {
     res.status(500).send({ erro: true, mensagem: e.message });
   }
