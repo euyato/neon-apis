@@ -50,7 +50,7 @@ app.get("/canvas/musicard", async (req, res) => {
         truncatedText = truncatedText.slice(0, -1);
       }
 
-      return truncatedText + (text !== truncatedText ? '...' : '');
+      return truncatedText + (text !== truncatedText ? '..' : '');
     }
 
     // Fundo
