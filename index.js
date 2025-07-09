@@ -20,90 +20,97 @@ var __dirname = dirname(__filename);
 app.use(express.json());
 
 app.get("/canvas/musicard", async (req, res) => {
-  try {
-    const {
-      nome,
-      autor,
-      logo,
-      thumb,
-      end,
-      progresso = 50,
-      start = "0:00",
-      opacity = 0.5
-    } = req.query;
-
-    // Verificações obrigatórias
-    if (!nome || !autor || !logo || !thumb || !end) {
-      return res.status(400).send({
-        erro: true,
-        mensagem: "Campos obrigatórios: nome, autor, logo, thumb (fundo), end"
-      });
-    }
-
-    const width = 900;
-    const height = 400;
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext("2d");
-
-    // Imagem de fundo (thumb agora é o fundo)
-    const background = await loadImage(thumb);
-    ctx.drawImage(background, 0, 0, width, height);
-
-    // Opacidade preta sobre o fundo
-    ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
-    ctx.fillRect(0, 0, width, height);
-
-    // Logo redondo (imagem de perfil)
-    const logoImg = await loadImage(logo);
-    const logoSize = 180;
-    const logoX = 50;
-    const logoY = 100;
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
-    ctx.restore();
-
-    // Título da música
-    ctx.fillStyle = "#fff";
-    ctx.font = "36px Orbitron";
-    ctx.fillText(nome, 270, 140);
-
-    // Nome do autor
-    ctx.font = "24px Orbitron";
-    ctx.fillStyle = "#ccc";
-    ctx.fillText(autor, 270, 180);
-
-    // Barra de progresso
-    const barX = 270;
-    const barY = 250;
-    const barWidth = 580;
-    const barHeight = 15;
-    const progress = Math.max(0, Math.min(100, parseFloat(progresso)));
-
-    // Barra base
-    ctx.fillStyle = "#888";
-    ctx.fillRect(barX, barY, barWidth, barHeight);
-
-    // Progresso
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(barX, barY, (barWidth * progress) / 100, barHeight);
-
-    // Tempos
-    ctx.fillStyle = "#fff";
-    ctx.font = "18px Orbitron";
-    ctx.fillText(start, barX, barY + 25);
-    ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 25);
-
-    res.setHeader("Content-Type", "image/png");
-    canvas.createPNGStream().pipe(res);
-
-  } catch (e) {
-    res.status(500).send({ erro: true, mensagem: e.message });
-  }
+try {
+const {
+  nome,
+  autor,
+  logo,
+  thumb,
+  end
+} = req.query;
+const start = "0:00";
+const progresso = 60;
+const opacity = 0.5;
+// valida campos obrigatórios
+if (!nome || !autor || !logo || !thumb || !end) {
+return res.status(400).json({erro: true,
+mensagem: "Campos obrigatórios: nome, autor, logo, thumb (fundo), end"
+});
+}
+// dimensões do canvas
+const width = 900;
+const height = 400;
+const canvas = createCanvas(width, height);
+const ctx = canvas.getContext("2d");
+// 1) desenha o fundo
+const bg = await loadImage(thumb);
+ctx.drawImage(bg, 0, 0, width, height);
+// 2) overlay preto semitransparente
+ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
+ctx.fillRect(0, 0, width, height);
+// 3) thumbnail circular (logo)
+const logoImg = await loadImage(logo);
+const logoSize = 180;
+const logoX = 50;
+const logoY = 100;
+ctx.save();
+ctx.beginPath();
+ctx.arc(
+logoX + logoSize / 2,
+logoY + logoSize / 2,
+logoSize / 2,
+0,
+Math.PI * 2
+);
+ctx.closePath();
+ctx.clip();
+ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+ctx.restore();
+// borda cinza escuro em volta da thumbnail
+ctx.beginPath();
+ctx.arc(
+logoX + logoSize / 2,
+logoY + logoSize / 2,
+logoSize / 2,
+0,
+Math.PI * 2
+);
+ctx.lineWidth = 5;
+ctx.strokeStyle = "#2c2c2c";
+ctx.stroke();
+// 4) título da música
+ctx.fillStyle = "#ffffff";
+ctx.font = "36px Orbitron";
+ctx.fillText(nome, logoX + logoSize + 40, logoY + 40);
+// 5) autor / canal
+ctx.fillStyle = "#cccccc";
+ctx.font = "24px Orbitron";
+ctx.fillText(autor, logoX + logoSize + 40, logoY + 85);
+// 6) barra de progresso
+const barX = logoX + logoSize + 40;
+const barY = logoY + 150;
+const barWidth = 580;
+const barHeight = 15;
+const pct = Math.max(0, Math.min(100, parseFloat(progresso)));
+// barra de fundo
+ctx.fillStyle = "#555555";
+ctx.fillRect(barX, barY, barWidth, barHeight);
+// barra de progresso
+ctx.fillStyle = "#ffffff";
+ctx.fillRect(barX, barY, (barWidth * pct) / 100, barHeight);
+// 7) tempos
+const timeY = barY + barHeight + 30;
+ctx.fillStyle = "#ffffff";
+ctx.font = "18px Orbitron";
+ctx.fillText(start, barX, timeY);
+ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, timeY);
+// retorna a imagem
+res.setHeader("Content-Type", "image/png");
+canvas.createPNGStream().pipe(res);
+} catch (err) {
+console.error(err);
+res.status(500).json({ erro: true, mensagem: err.message });
+}
 });
 
 app.get('/api/pinterest', async (req, res) => {  
