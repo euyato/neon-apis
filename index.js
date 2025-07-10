@@ -76,7 +76,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.restore();
 
     // Borda cinza escuro na logo
-    ctx.strokeStyle = "#333";
+    ctx.strokeStyle = "rgb(0, 200, 0)";
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
