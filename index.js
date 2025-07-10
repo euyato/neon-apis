@@ -40,18 +40,24 @@ app.get("/canvas/welcome", async (req, res) => {
     const bgImage = await loadImage(fundo);
     ctx.drawImage(bgImage, 0, 0, width, height);
 
-    // Caixa cinza escuro transparente atrás de tudo
-    ctx.fillStyle = "rgba(50, 50, 50, 0.6)"; // Cor cinza escuro com transparência
-    ctx.fillRect(0, 0, width, height); // Desenhar o retângulo
+    // Caixa transparente com borda arredondada
+    ctx.fillStyle = "rgba(50, 50, 50, 0.4)";  // Transparência ajustada
+    ctx.beginPath();
+    ctx.moveTo(20, 20); // Arredondar os cantos
+    ctx.lineTo(width - 20, 20);
+    ctx.lineTo(width - 20, height - 20);
+    ctx.lineTo(20, height - 20);
+    ctx.closePath();
+    ctx.fill();
 
     // Logo circular no centro (ajustada para cima)
     const logoImg = await loadImage(logo);
-    const logoSize = 280;  // Tamanho da logo
+    const logoSize = 200;  // Tamanho da logo ajustado
     const logoX = width / 2 - logoSize / 2;
-    const logoY = 100;  // Logo movida para cima
+    const logoY = 80;  // Logo movida para cima
 
     // Adicionando borda vermelha no ícone
-    const borderSize = 10; // Tamanho da borda
+    const borderSize = 8; // Tamanho da borda ajustado
     ctx.beginPath();
     ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
     ctx.lineWidth = borderSize;
