@@ -54,7 +54,7 @@ app.get("/canvas/welcome", async (req, res) => {
     const logoImg = await loadImage(logo);
     const logoSize = 200;  // Tamanho da logo ajustado
     const logoX = width / 2 - logoSize / 2;
-    const logoY = 160;  // Logo movida para baixo (ajustada)
+    const logoY = 130;  // Logo movida para baixo (ajustada)
 
     // Adicionando borda vermelha no ícone
     const borderSize = 8; // Tamanho da borda ajustado
@@ -80,12 +80,12 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.shadowColor = "red";
     ctx.shadowBlur = 25;
     ctx.font = "80px Orbitron";  // Tamanho do título
-    ctx.fillText(titulo, width / 2, 380);  // Ajustado para cima
+    ctx.fillText(titulo, width / 2, 420);  // Ajustado para cima
 
     // Texto: Número do usuário (mais para cima)
     ctx.font = "40px Orbitron";  // Tamanho do número
     ctx.shadowBlur = 15;
-    ctx.fillText(numero, width / 2, 440);  // Ajustado para cima
+    ctx.fillText(numero, width / 2, 480);  // Ajustado para cima
 
     // Enviar a imagem
     res.setHeader("Content-Type", "image/png");
