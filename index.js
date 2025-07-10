@@ -19,13 +19,13 @@ var __dirname = dirname(__filename);
 // Middleware para JSON
 app.use(express.json());
 
-app.get("/canvas/welcome", async (req, res) => {
+app.get("/canvas/welcome", async (req, res) => { 
   try {
     const { numero, titulo, logo, fundo } = req.query;
 
     // Verificação obrigatória
-if (!numero || !titulo || !logo || !fundo) {
-return res.status(400).json({
+    if (!numero || !titulo || !logo || !fundo) {
+      return res.status(400).json({
         erro: true,
         mensagem: "Campos obrigatórios: numero, titulo, logo e fundo",
       });
@@ -42,9 +42,9 @@ return res.status(400).json({
 
     // Logo circular no centro
     const logoImg = await loadImage(logo);
-    const logoSize = 240;
+    const logoSize = 300;  // Aumentando o tamanho da logo
     const logoX = width / 2 - logoSize / 2;
-    const logoY = 160;
+    const logoY = 120;  // Ajustando a posição da logo
 
     ctx.save();
     ctx.beginPath();
@@ -59,17 +59,18 @@ return res.status(400).json({
     ctx.textAlign = "center";
     ctx.shadowColor = "red";
     ctx.shadowBlur = 25;
-    ctx.font = "60px Orbitron";
-    ctx.fillText(titulo, width / 2, 500);
+    ctx.font = "80px Orbitron";  // Aumentando o tamanho do título
+    ctx.fillText(titulo, width / 2, 450);  // Ajustando a posição do título
 
-    // Texto: Número do usuário
-    ctx.font = "30px Orbitron";
+    // Texto: Número do usuário (sem o "ID:")
+    ctx.font = "40px Orbitron";  // Aumentando o tamanho do número
     ctx.shadowBlur = 15;
-    ctx.fillText(`ID: ${numero}`, width / 2, 550);
+    ctx.fillText(numero, width / 2, 510);  // Ajustando a posição do número
 
     // Enviar a imagem
     res.setHeader("Content-Type", "image/png");
     canvas.createPNGStream().pipe(res);
+
   } catch (e) {
     res.status(500).json({ erro: true, mensagem: e.message });
   }
