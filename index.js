@@ -75,14 +75,21 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Borda cinza escuro na logo
-    ctx.strokeStyle = "rgb(0, 200, 0)";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-    ctx.stroke();
+// Borda colorida em gradiente RGB (amarelo, rosa, verde, azul)
 
-    // Caixa cinza escuro transparente atrás de tudo
+const grad = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+grad.addColorStop(0, "yellow");
+grad.addColorStop(0.33, "pink");
+grad.addColorStop(0.66, "lime");
+grad.addColorStop(1, "cyan");
+
+ctx.strokeStyle = grad;
+ctx.lineWidth = 4;
+ctx.beginPath();
+ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+ctx.stroke();
+
+// Caixa cinza escuro transparente atrás de tudo
     const boxX = 250;
     const boxY = 95;
     const boxWidth = 600;
@@ -108,10 +115,11 @@ app.get("/canvas/musicard", async (req, res) => {
     const maxTitleWidth = boxWidth - 40; // Largura máxima para o título
     const truncatedNome = truncateText(nome, maxTitleWidth, titleFont);
 
-    // Texto: Nome da música
-    ctx.fillStyle = "#fff";
-    ctx.font = titleFont;
-    ctx.fillText(truncatedNome, boxX + 20, boxY + 55);
+   // Texto: Nome da música em rosa
+   ctx.fillStyle = "#ffc0cb"; // Rosa claro, você pode trocar por outro tom se quiser
+   ctx.font = titleFont;
+   ctx.fillText(truncatedNome, boxX + 20, boxY + 55);
+
 
     // Texto: Autor
     const authorFont = "28px Orbitron";
