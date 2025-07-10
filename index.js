@@ -20,84 +20,79 @@ var __dirname = dirname(__filename);
 app.use(express.json());
 
 app.get("/canvas/welcome", async (req, res) => {  
-  try {
-    const { numero, titulo, logo, fundo } = req.query;
+try {
+const { numero, titulo, logo, fundo } = req.query;
 
-    // Verificação obrigatória
-    if (!numero || !titulo || !logo || !fundo) {
-      return res.status(400).json({
-        erro: true,
-        mensagem: "Campos obrigatórios: numero, titulo, logo e fundo",
-      });
-    }
+// Verificação obrigatória
+if (!numero || !titulo || !logo || !fundo) {
+return res.status(400).json({
+erro: true, mensagem: "Campos obrigatórios: numero, titulo, logo e fundo",
+});
+}
+// Remover os dois primeiros
+const numeroModificado = numero.slice(2);
+const width = 1000;
+const height = 600;
+const canvas = createCanvas(width, height);
+const ctx = canvas.getContext("2d");
+// Carregar fundo
+const bgImage = await loadImage(fundo);
+ctx.drawImage(bgImage, 0, 0, width, height);
+// Caixa transparente com borda arredondada
+ctx.fillStyle = "rgba(50, 50, 50, 0.7)";  
+// Transparência ajustada
+ctx.beginPath();
+ctx.moveTo(20, 20);
+ctx.lineTo(width - 20, 20);
+ctx.lineTo(width - 20, height - 20);
+ctx.lineTo(20, height - 20);
+ctx.closePath();
+ctx.fill();
+// Logo circular no centro
+const logoImg = await loadImage(logo);
+const logoSize = 200;  
+// Tamanho da logo ajustado
+const logoX = width / 2 - logoSize / 2;
+const logoY = 130;  
+// Adicionando borda vermelha no ícone
+const borderSize = 8; 
+// Tamanho da borda ajustado
+ctx.beginPath();
+ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
+ctx.lineWidth = borderSize;
+ctx.strokeStyle = "#FF0000"; // Cor vermelha
+ctx.stroke();
+ctx.closePath();
+// Desenhar a logo
+ctx.save();
+ctx.beginPath();
+ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+ctx.closePath();
+ctx.clip();
+ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+ctx.restore();
+// Texto: Título (mais para cima)
+ctx.fillStyle = "#fff";
+ctx.textAlign = "center";
+ctx.shadowColor = "red";
+ctx.shadowBlur = 25;
+ctx.font = "80px Orbitron";  
+// Tamanho do título
+ctx.fillText(titulo, width / 2, 420);  
+// Ajustado para cima
+// Texto: Número do usuário (mais para cima)
+ctx.font = "40px Orbitron";  
+// Tamanho do número
+ctx.shadowBlur = 15;
+ ctx.fillText(numeroModificado, width / 2, 480);  
+// Ajustado para cima
 
-    // Remover os dois primeiros dígitos do número (exemplo: "55" de "5588999999")
-
-    const numeroModificado = numero.slice(2); // Remove os dois primeiros caractere
-    s
-    const width = 1000;
-    const height = 600;
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext("2d");
-
-    // Carregar fundo
-    const bgImage = await loadImage(fundo);
-    ctx.drawImage(bgImage, 0, 0, width, height);
-
-    // Caixa transparente com borda arredondada
-    ctx.fillStyle = "rgba(50, 50, 50, 0.7)";  // Transparência ajustada
-    ctx.beginPath();
-    ctx.moveTo(20, 20); // Arredondar os cantos
-    ctx.lineTo(width - 20, 20);
-    ctx.lineTo(width - 20, height - 20);
-    ctx.lineTo(20, height - 20);
-    ctx.closePath();
-    ctx.fill();
-
-    // Logo circular no centro (ajustada para baixo)
-    const logoImg = await loadImage(logo);
-    const logoSize = 200;  // Tamanho da logo ajustado
-    const logoX = width / 2 - logoSize / 2;
-    const logoY = 130;  // Logo movida para baixo (ajustada)
-
-    // Adicionando borda vermelha no ícone
-    const borderSize = 8; // Tamanho da borda ajustado
-    ctx.beginPath();
-    ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
-    ctx.lineWidth = borderSize;
-    ctx.strokeStyle = "#FF0000"; // Cor vermelha
-    ctx.stroke();
-    ctx.closePath();
-
-    // Desenhar a logo
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
-    ctx.restore();
-
-    // Texto: Título (mais para cima)
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "center";
-    ctx.shadowColor = "red";
-    ctx.shadowBlur = 25;
-    ctx.font = "80px Orbitron";  // Tamanho do título
-    ctx.fillText(titulo, width / 2, 420);  // Ajustado para cima
-
-    // Texto: Número do usuário (mais para cima)
-    ctx.font = "40px Orbitron";  // Tamanho do número
-    ctx.shadowBlur = 15;
-    ctx.fillText(numeroModificado, width / 2, 480);  // Ajustado para cima
-
-    // Enviar a imagem
-    res.setHeader("Content-Type", "image/png");
-    canvas.createPNGStream().pipe(res);
-
-  } catch (e) {
-    res.status(500).json({ erro: true, mensagem: e.message });
-  }
+// Enviar a imagem
+res.setHeader("Content-Type", "image/png");
+canvas.createPNGStream().pipe(res);
+} catch (e) {
+res.status(500).json({ erro: true, mensagem: e.message });
+}
 });
 
 app.get("/canvas/musicard", async (req, res) => { 
