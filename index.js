@@ -19,7 +19,7 @@ var __dirname = dirname(__filename);
 // Middleware para JSON
 app.use(express.json());
 
-app.get("/canvas/welcome", async (req, res) => { 
+app.get("/canvas/welcome", async (req, res) => {  
   try {
     const { numero, titulo, logo, fundo } = req.query;
 
@@ -40,12 +40,26 @@ app.get("/canvas/welcome", async (req, res) => {
     const bgImage = await loadImage(fundo);
     ctx.drawImage(bgImage, 0, 0, width, height);
 
+    // Caixa cinza escuro transparente atrás de tudo
+    ctx.fillStyle = "rgba(50, 50, 50, 0.6)"; // Cor cinza escuro com transparência
+    ctx.fillRect(0, 0, width, height); // Desenhar o retângulo
+
     // Logo circular no centro (ajustada para cima)
     const logoImg = await loadImage(logo);
     const logoSize = 280;  // Tamanho da logo
     const logoX = width / 2 - logoSize / 2;
     const logoY = 100;  // Logo movida para cima
 
+    // Adicionando borda vermelha no ícone
+    const borderSize = 10; // Tamanho da borda
+    ctx.beginPath();
+    ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
+    ctx.lineWidth = borderSize;
+    ctx.strokeStyle = "#FF0000"; // Cor vermelha
+    ctx.stroke();
+    ctx.closePath();
+
+    // Desenhar a logo
     ctx.save();
     ctx.beginPath();
     ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
@@ -111,7 +125,7 @@ app.get("/canvas/musicard", async (req, res) => {
     }
 
     // Fundo
-    const background = await loadImage(thumb);
+  const background = await loadImage(thumb);
     ctx.drawImage(background, 0, 0, width, height);
 
     // Camada escura transparente
