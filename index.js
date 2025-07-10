@@ -44,7 +44,7 @@ app.get("/canvas/welcome", async (req, res) => {
     const logoImg = await loadImage(logo);
     const logoSize = 280;  // Tamanho da logo
     const logoX = width / 2 - logoSize / 2;
-    const logoY = 90;  // Logo movida para cima
+    const logoY = 100;  // Logo movida para cima
 
     ctx.save();
     ctx.beginPath();
