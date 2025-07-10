@@ -31,6 +31,10 @@ app.get("/canvas/welcome", async (req, res) => {
       });
     }
 
+    // Remover os dois primeiros dígitos do número (exemplo: "55" de "5588999999")
+
+    const numeroModificado = numero.slice(2); // Remove os dois primeiros caractere
+    s
     const width = 1000;
     const height = 600;
     const canvas = createCanvas(width, height);
@@ -85,7 +89,7 @@ app.get("/canvas/welcome", async (req, res) => {
     // Texto: Número do usuário (mais para cima)
     ctx.font = "40px Orbitron";  // Tamanho do número
     ctx.shadowBlur = 15;
-    ctx.fillText(numero, width / 2, 480);  // Ajustado para cima
+    ctx.fillText(numeroModificado, width / 2, 480);  // Ajustado para cima
 
     // Enviar a imagem
     res.setHeader("Content-Type", "image/png");
