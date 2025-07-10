@@ -41,7 +41,7 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.drawImage(bgImage, 0, 0, width, height);
 
     // Caixa transparente com borda arredondada
-    ctx.fillStyle = "rgba(50, 50, 50, 0.4)";  // Transparência ajustada
+    ctx.fillStyle = "rgba(50, 50, 50, 0.7)";  // Transparência ajustada
     ctx.beginPath();
     ctx.moveTo(20, 20); // Arredondar os cantos
     ctx.lineTo(width - 20, 20);
@@ -50,11 +50,11 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.closePath();
     ctx.fill();
 
-    // Logo circular no centro (ajustada para cima)
+    // Logo circular no centro (ajustada para baixo)
     const logoImg = await loadImage(logo);
     const logoSize = 200;  // Tamanho da logo ajustado
     const logoX = width / 2 - logoSize / 2;
-    const logoY = 80;  // Logo movida para cima
+    const logoY = 160;  // Logo movida para baixo (ajustada)
 
     // Adicionando borda vermelha no ícone
     const borderSize = 8; // Tamanho da borda ajustado
@@ -74,18 +74,18 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Texto: Título (mais para baixo)
+    // Texto: Título (mais para cima)
     ctx.fillStyle = "#fff";
     ctx.textAlign = "center";
     ctx.shadowColor = "red";
     ctx.shadowBlur = 25;
     ctx.font = "80px Orbitron";  // Tamanho do título
-    ctx.fillText(titulo, width / 2, 460);  // Ajustado para baixo
+    ctx.fillText(titulo, width / 2, 380);  // Ajustado para cima
 
-    // Texto: Número do usuário (mais para baixo)
+    // Texto: Número do usuário (mais para cima)
     ctx.font = "40px Orbitron";  // Tamanho do número
     ctx.shadowBlur = 15;
-    ctx.fillText(numero, width / 2, 520);  // Ajustado para baixo
+    ctx.fillText(numero, width / 2, 440);  // Ajustado para cima
 
     // Enviar a imagem
     res.setHeader("Content-Type", "image/png");
