@@ -77,17 +77,17 @@ app.get("/canvas/ping", async (req, res) => {
     ctx.shadowColor = "black";
     ctx.shadowBlur = 20;
     ctx.font = "60px Orbitron";
-    ctx.fillText(text, width / 2, 340);
+    ctx.fillText(text, width / 2, 370);
 
     // Ping (text2)
     ctx.font = "40px Orbitron";
     ctx.fillStyle = "#00FFFF";
-    ctx.fillText(text2, width / 2, 400);
+    ctx.fillText(text2, width / 2, 430);
 
     // Descrição (text3)
     ctx.font = "30px Orbitron";
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(text3, width / 2, 450);
+    ctx.fillText(text3, width / 2, 480);
 
     // Envia imagem
     res.setHeader("Content-Type", "image/png");
