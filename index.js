@@ -40,11 +40,11 @@ app.get("/canvas/welcome", async (req, res) => {
     const bgImage = await loadImage(fundo);
     ctx.drawImage(bgImage, 0, 0, width, height);
 
-    // Logo circular no centro
+    // Logo circular no centro (ajustada para cima)
     const logoImg = await loadImage(logo);
-    const logoSize = 300;  // Aumentando o tamanho da logo
+    const logoSize = 280;  // Tamanho da logo
     const logoX = width / 2 - logoSize / 2;
-    const logoY = 120;  // Ajustando a posição da logo
+    const logoY = 90;  // Logo movida para cima
 
     ctx.save();
     ctx.beginPath();
@@ -54,18 +54,18 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Texto: Título (como "Bem-vindo", "Despedida", ou o título fornecido)
+    // Texto: Título (mais para baixo)
     ctx.fillStyle = "#fff";
     ctx.textAlign = "center";
     ctx.shadowColor = "red";
     ctx.shadowBlur = 25;
-    ctx.font = "80px Orbitron";  // Aumentando o tamanho do título
-    ctx.fillText(titulo, width / 2, 450);  // Ajustando a posição do título
+    ctx.font = "80px Orbitron";  // Tamanho do título
+    ctx.fillText(titulo, width / 2, 460);  // Ajustado para baixo
 
-    // Texto: Número do usuário (sem o "ID:")
-    ctx.font = "40px Orbitron";  // Aumentando o tamanho do número
+    // Texto: Número do usuário (mais para baixo)
+    ctx.font = "40px Orbitron";  // Tamanho do número
     ctx.shadowBlur = 15;
-    ctx.fillText(numero, width / 2, 510);  // Ajustando a posição do número
+    ctx.fillText(numero, width / 2, 520);  // Ajustado para baixo
 
     // Enviar a imagem
     res.setHeader("Content-Type", "image/png");
