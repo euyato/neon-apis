@@ -19,6 +19,84 @@ var __dirname = dirname(__filename);
 // Middleware para JSON
 app.use(express.json());
 
+app.get("/canvas/ping", async (req, res) => {
+  try {
+    const { text, text2, text3, logo, fundo } = req.query;
+
+    // Verificação obrigatória
+    if (!text || !text2 || !text3 || !logo || !fundo) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Parâmetros obrigatórios: text, text2, text3, logo, fundo",
+      });
+    }
+
+    const width = 1024;
+    const height = 512;
+
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    // Fundo
+    const bg = await loadImage(fundo);
+    ctx.drawImage(bg, 0, 0, width, height);
+
+    // Configurações da logo
+    const logoSize = 200;
+    const logoX = width / 2 - logoSize / 2;
+    const logoY = 80;
+    const borderSize = 10;
+
+    // Gradiente azul-verde-amarelo para a borda
+    const gradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+    gradient.addColorStop(0, "#007BFF");  // Azul
+    gradient.addColorStop(0.5, "#00FF00"); // Verde
+    gradient.addColorStop(1, "#FFD700");  // Amarelo
+
+    // Borda circular
+    ctx.beginPath();
+    ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
+    ctx.lineWidth = borderSize;
+    ctx.strokeStyle = gradient;
+    ctx.stroke();
+    ctx.closePath();
+
+    // Ícone com máscara circular
+    const icon = await loadImage(logo);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(icon, logoX, logoY, logoSize, logoSize);
+    ctx.restore();
+
+    // Nome do bot (text)
+    ctx.fillStyle = "#FFFFFF";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "black";
+    ctx.shadowBlur = 20;
+    ctx.font = "60px Orbitron";
+    ctx.fillText(text, width / 2, 340);
+
+    // Ping (text2)
+    ctx.font = "40px Orbitron";
+    ctx.fillStyle = "#00FFFF";
+    ctx.fillText(text2, width / 2, 400);
+
+    // Descrição (text3)
+    ctx.font = "30px Orbitron";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(text3, width / 2, 450);
+
+    // Envia imagem
+    res.setHeader("Content-Type", "image/png");
+    canvas.createPNGStream().pipe(res);
+  } catch (e) {
+    res.status(500).json({ erro: true, mensagem: e.message });
+  }
+});
+
 app.get("/canvas/welcome", async (req, res) => {  
 try {
 const { numero, titulo, logo, fundo } = req.query;
@@ -32,7 +110,7 @@ erro: true, mensagem: "Campos obrigatórios: numero, titulo, logo e fundo",
 // Remover os dois primeiros
 const numeroModificado = numero.slice(2);
 const width = 1000;
-const height = 600;
+const height = 580;
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext("2d");
 // Carregar fundo
