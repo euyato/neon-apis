@@ -183,6 +183,7 @@
       <option value="pesquisa">Pesquisas</option>
       <option value="stickers">Stickers</option>
       <option value="logos">Logos imagem</option>
+      <option value="canvas">Cards imagem</option>
       <option value="gpt">Inteligências</option>
       <option value="plaq">Plaquinhas</option>
       <option value="adulto">Adultos</option>
@@ -299,6 +300,14 @@
     <div class="rota logos hidden">
       <h5>Logo Write</h5>
       <button class="btn-get" onclick="abrirPopup('/api/logo-write?texto=neon%20apis')">GET</button>
+    </div>
+    <div class="rota canvas">
+      <h5>Card de Musica</h5>
+      <button class="btn-get" onclick="abrirPopup('/canvas/musicard?nome=Youtube&autor=Card%20music&logo=https://files.catbox.moe/hhvx4h.jpeg&end=3.00')">GET</button>
+    </div>
+    <div class="rota canvas">
+      <h5>Card Bemvindo/saiu</h5>
+      <button class="btn-get" onclick="abrirPopup('/canvas/welcome?fundo=https://files.catbox.moe/yv79sb.jpeg&titulo=Bem-vindo&numero=5588999999&logo=https://files.catbox.moe/is61ct.jpeg')">GET</button>
     </div>
 
     <div class="rota gpt hidden">
