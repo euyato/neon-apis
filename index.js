@@ -19,6 +19,62 @@ var __dirname = dirname(__filename);
 // Middleware para JSON
 app.use(express.json());
 
+app.get("/canvas/welcome", async (req, res) => {
+  try {
+    const { numero, titulo, logo, fundo } = req.query;
+
+    // Verificação obrigatória
+if (!numero || !titulo || !logo || !fundo) {
+return res.status(400).json({
+        erro: true,
+        mensagem: "Campos obrigatórios: numero, titulo, logo e fundo",
+      });
+    }
+
+    const width = 1000;
+    const height = 600;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    // Carregar fundo
+    const bgImage = await loadImage(fundo);
+    ctx.drawImage(bgImage, 0, 0, width, height);
+
+    // Logo circular no centro
+    const logoImg = await loadImage(logo);
+    const logoSize = 240;
+    const logoX = width / 2 - logoSize / 2;
+    const logoY = 160;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+    ctx.restore();
+
+    // Texto: Título (como "Bem-vindo", "Despedida", ou o título fornecido)
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "red";
+    ctx.shadowBlur = 25;
+    ctx.font = "60px Orbitron";
+    ctx.fillText(titulo, width / 2, 500);
+
+    // Texto: Número do usuário
+    ctx.font = "30px Orbitron";
+    ctx.shadowBlur = 15;
+    ctx.fillText(`ID: ${numero}`, width / 2, 550);
+
+    // Enviar a imagem
+    res.setHeader("Content-Type", "image/png");
+    canvas.createPNGStream().pipe(res);
+  } catch (e) {
+    res.status(500).json({ erro: true, mensagem: e.message });
+  }
+});
+
 app.get("/canvas/musicard", async (req, res) => { 
   try {
     const { nome, autor, logo, end } = req.query;
