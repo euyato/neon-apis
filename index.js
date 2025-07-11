@@ -45,21 +45,20 @@ app.get("/canvas/ping", async (req, res) => {
     const logoSize = 200;
     const logoX = width / 2 - logoSize / 2;
     const logoY = 80;
-    const borderSize = 10;
+    const borderSize = 5; // Borda mais fina
 
-    // Gradiente azul-verde-amarelo para a borda
-    const gradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
-    gradient.addColorStop(0, "#007BFF");  // Azul
-    gradient.addColorStop(0.5, "#00FF00"); // Verde
-    gradient.addColorStop(1, "#FFD700");  // Amarelo
+// Gradiente branco para cinza claro
+const gradient = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+gradient.addColorStop(0, "#FFFFFF");   // Branco
+gradient.addColorStop(1, "#D3D3D3");   // Cinza claro
 
-    // Borda circular
-    ctx.beginPath();
-    ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
-    ctx.lineWidth = borderSize;
-    ctx.strokeStyle = gradient;
-    ctx.stroke();
-    ctx.closePath();
+// Borda circular
+ctx.beginPath();
+ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
+ctx.lineWidth = borderSize;
+ctx.strokeStyle = gradient; // Corrigido aqui
+ctx.stroke();
+ctx.closePath();
 
     // Ícone com máscara circular
     const icon = await loadImage(logo);
