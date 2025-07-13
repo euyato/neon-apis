@@ -19,6 +19,10 @@ var __dirname = dirname(__filename);
 // Middleware para JSON
 app.use(express.json());
 
+app.get('/verificacao', (req, res) => {
+  res.json({ valor: 99 }); // ou 105, qualquer um dos valores válidos
+});
+
 app.get("/canvas/ping", async (req, res) => {
   try {
     const { text, text2, text3, logo, fundo } = req.query;
