@@ -36,7 +36,7 @@ app.get("/canvas/ping", async (req, res) => {
     }
 
     const width = 1024;
-    const height = 512;
+    const height = 520;
 
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
@@ -180,7 +180,7 @@ app.get("/canvas/musicard", async (req, res) => {
   try {
     const { nome, autor, logo, end } = req.query;
 
-    const thumb = 'https://files.catbox.moe/kbvko4.jpeg';
+    const thumb = 'https://files.catbox.moe/dfsc45.jpg';
 
     // Verificação obrigatória
     if (!nome || !autor || !logo || !end) {
@@ -191,7 +191,7 @@ app.get("/canvas/musicard", async (req, res) => {
     }
 
     const width = 900;
-    const height = 400;
+    const height = 420;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
