@@ -20,7 +20,7 @@ var __dirname = dirname(__filename);
 app.use(express.json());
 
 app.get('/verificacao', (req, res) => {
-  res.json({ valor: 99 }); // ou 105, qualquer um dos valores válidos
+  res.json({ valor: 2 }); // ou 105, qualquer um dos valores válidos
 });
 
 app.get("/canvas/ping", async (req, res) => {
