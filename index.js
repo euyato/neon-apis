@@ -301,7 +301,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 40);
 
     // Controles de player (botões)
-    const controlY = barY + 70;
+    const controlY = barY + 60;
     const centerX = boxX + boxWidth / 2;
 
     ctx.textAlign = "center";
