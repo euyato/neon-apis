@@ -102,101 +102,86 @@ ctx.closePath();
 
 app.get("/canvas/welcome", async (req, res) => {
   try {
-    const { numero, titulo, logo, fundo, grupo } = req.query;
+    const { numero, logo, fundo, grupo } = req.query;
 
-    if (!numero || !titulo || !logo || !fundo || !grupo) {
+    if (!numero || !logo || !fundo || !grupo) {
       return res.status(400).json({
         erro: true,
-        mensagem: "Campos obrigatórios: numero, titulo, logo, fundo e grupo",
+        mensagem: "Campos obrigatórios: numero, logo, fundo e grupo",
       });
     }
 
-    const numeroModificado = "#" + numero.slice(2);
     const width = 1024;
     const height = 512;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
     // Fundo
-    const bgImage = await loadImage(fundo);
-    ctx.drawImage(bgImage, 0, 0, width, height);
+    const bg = await loadImage(fundo);
+    ctx.drawImage(bg, 0, 0, width, height);
 
-    // Caixa escura transparente
-    ctx.fillStyle = "rgba(10, 10, 10, 0.6)";
-    const boxX = 40, boxY = 40, boxW = width - 80, boxH = height - 80;
-    const radius = 20;
-
+    // Caixa escura
+    ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
     ctx.beginPath();
-    ctx.moveTo(boxX + radius, boxY);
-    ctx.lineTo(boxX + boxW - radius, boxY);
-    ctx.quadraticCurveTo(boxX + boxW, boxY, boxX + boxW, boxY + radius);
-    ctx.lineTo(boxX + boxW, boxY + boxH - radius);
-    ctx.quadraticCurveTo(boxX + boxW, boxY + boxH, boxX + boxW - radius, boxY + boxH);
-    ctx.lineTo(boxX + radius, boxY + boxH);
-    ctx.quadraticCurveTo(boxX, boxY + boxH, boxX, boxY + boxH - radius);
-    ctx.lineTo(boxX, boxY + radius);
-    ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+    ctx.moveTo(20, 20);
+    ctx.lineTo(width - 20, 20);
+    ctx.lineTo(width - 20, height - 20);
+    ctx.lineTo(20, height - 20);
     ctx.closePath();
     ctx.fill();
 
-    // Borda da caixa
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
     // Foto de perfil
     const logoImg = await loadImage(logo);
-    const logoSize = 160;
-    const logoX = 80, logoY = height / 2 - logoSize / 2;
+    const logoSize = 180;
+    const logoX = 60;
+    const logoY = height / 2 - logoSize / 2;
+
+    // Borda preta
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 4, 0, Math.PI * 2);
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    ctx.closePath();
 
     // Máscara circular
     ctx.save();
     ctx.beginPath();
     ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-    ctx.closePath();
     ctx.clip();
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Borda branca na logo
-    ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 5, 0, Math.PI * 2);
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.closePath();
-
-    // Título "Bem-vindo"
+    // Texto: Bem-vindo (azul com sombra preta)
     ctx.font = "bold 80px Orbitron";
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "left";
-    ctx.shadowColor = "#00f0ff";
-    ctx.shadowBlur = 25;
-    ctx.fillText("Bem-vindo", 280, 120);
-
-    // Nome do usuário (titulo)
-    ctx.font = "40px Orbitron";
+    ctx.fillStyle = "#00ccff";
+    ctx.textAlign = "center";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 10;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText(titulo, 280, 190);
+    ctx.fillText("Bem-vindo", width / 2 + 100, 100);
 
-    // Número (ex: #2025)
-    ctx.font = "32px Orbitron";
+    // Nome do membro (campo numero)
+    ctx.font = "40px Orbitron";
+    ctx.fillStyle = "#fff";
+    ctx.shadowBlur = 0;
+    ctx.fillText(numero, width / 2 + 100, 180);
+
+    // Número fixo #2025
+    ctx.font = "35px Orbitron";
     ctx.fillStyle = "#ccc";
-    ctx.fillText(numeroModificado, 280, 240);
+    ctx.fillText("#2025", width / 2 + 100, 230);
 
     // Nome do grupo
-    ctx.font = "38px Orbitron";
+    ctx.font = "45px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.fillText(grupo, 280, 290);
+    ctx.fillText(grupo, width / 2 + 100, 300);
 
-    // Texto: - 0th member !
+    // Texto inferior
     ctx.font = "22px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.fillText("- New member!", 80, height - 40);
+    ctx.textAlign = "left";
+    ctx.fillText("- New Member!", 30, height - 30);
 
-    // Enviar imagem
     res.setHeader("Content-Type", "image/png");
     canvas.createPNGStream().pipe(res);
 
