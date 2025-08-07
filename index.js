@@ -152,35 +152,37 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.textAlign = "left";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 10;
-    ctx.fillText("Bem-vindo", 80, 90);
+    ctx.fillText("Bem-vindo(a)", 80, 90);
 
-    // Número (ao lado da logo, mais próximo e com sombra)
-    ctx.font = "48px Orbitron";
-    ctx.fillStyle = "#fff";
-    ctx.shadowColor = "#000";
-    ctx.shadowBlur = 15;
-    ctx.fillText(numero, logoX + logoSize + 40, logoY + 60);
+    // Número (grande, com sombra escura)
+    ctx.font = "bold 65px Orbitron";
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "#000000";
+    ctx.shadowBlur = 20;
+    const numeroX = logoX + logoSize + 40;
+    const numeroY = logoY + 70;
+    ctx.fillText(numero, numeroX, numeroY);
 
-    // #2025 (abaixo do número, com sombra)
-    ctx.font = "40px Orbitron";
-    ctx.fillStyle = "#ccc";
-    ctx.shadowColor = "#000";
-    ctx.shadowBlur = 15;
-    ctx.fillText("#2025", logoX + logoSize + 50, logoY + 100);
+    // #2025 (maior, mais abaixo, alinhado ao número)
+    ctx.font = "bold 50px Orbitron";
+    ctx.fillStyle = "#cccccc";
+    ctx.shadowColor = "#000000";
+    ctx.shadowBlur = 20;
+    ctx.fillText("#2025", numeroX, numeroY + 60);
 
-    // Nome do grupo (maior, um pouco mais pra direita e com sombra)
-    ctx.font = "55px Orbitron";
-    ctx.fillStyle = "#fff";
-    ctx.shadowColor = "#000";
-    ctx.shadowBlur = 15;
-    ctx.fillText(grupo, logoX + logoSize + 70, logoY + 150);
+    // Nome do grupo (bem maior, bem mais embaixo e centralizado na área lateral)
+    ctx.font = "bold 70px Orbitron";
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "#000000";
+    ctx.shadowBlur = 25;
+    ctx.fillText(grupo, numeroX, numeroY + 140);
 
     // Texto final no canto inferior esquerdo
     ctx.font = "22px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 8;
-    ctx.fillText("- New Member!", 50, height - 30);
+    ctx.fillText("- Novo Membro!", 50, height - 30);
 
     // Enviar imagem
     res.setHeader("Content-Type", "image/png");
