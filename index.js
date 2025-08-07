@@ -154,19 +154,19 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.shadowBlur = 10;
     ctx.fillText("Bem-vindo", 80, 90);
 
-    // Coordenadas base dos textos
+    // Base para os textos
     const baseX = logoX + logoSize + 40;
     const numeroY = logoY + 70;
-    const hashtagY = numeroY + 60;
+    const hashtagY = numeroY + 80;
 
-    // Caixa cinza para o número
-    const numeroBoxWidth = 350;
-    const numeroBoxHeight = 80;
-    ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
+    // Caixa do número (MAIOR)
+    const numeroBoxWidth = 400;
+    const numeroBoxHeight = 100;
+    ctx.fillStyle = "rgba(20, 20, 20, 0.7)"; // dark fosco
     ctx.shadowColor = "#000";
-    ctx.shadowBlur = 8;
+    ctx.shadowBlur = 10;
     ctx.beginPath();
-    ctx.roundRect(baseX - 20, numeroY - 60, numeroBoxWidth, numeroBoxHeight, 15);
+    ctx.roundRect(baseX - 20, numeroY - 70, numeroBoxWidth, numeroBoxHeight, 15);
     ctx.fill();
 
     // Texto: Número
@@ -176,41 +176,37 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.shadowBlur = 20;
     ctx.fillText(numero, baseX, numeroY);
 
-    // Texto: #2025 (abaixo do número)
+    // Texto: #2025 (mais pra baixo)
     ctx.font = "bold 50px Orbitron";
     ctx.fillStyle = "#ccc";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 20;
     ctx.fillText("#2025", baseX, hashtagY);
 
-    // NOVO: Nome do grupo separado lá embaixo
-    const grupoY = height - 100;
-    const grupoBoxWidth = 700;
-    const grupoBoxHeight = 90;
-    const grupoBoxX = baseX - 20;
-    const grupoBoxY = grupoY - 65;
-
-    // Caixa cinza para nome do grupo (lá embaixo)
-    ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
+    // Caixa do grupo (MENOR e mais abaixo)
+    const grupoY = height - 90;
+    const grupoBoxWidth = 580;
+    const grupoBoxHeight = 80;
+    ctx.fillStyle = "rgba(20, 20, 20, 0.7)"; // dark fosco
     ctx.shadowColor = "#000";
-    ctx.shadowBlur = 8;
+    ctx.shadowBlur = 10;
     ctx.beginPath();
-    ctx.roundRect(grupoBoxX, grupoBoxY, grupoBoxWidth, grupoBoxHeight, 15);
+    ctx.roundRect(baseX - 20, grupoY - 60, grupoBoxWidth, grupoBoxHeight, 15);
     ctx.fill();
 
-    // Texto: Nome do grupo (grande, separado)
-    ctx.font = "bold 70px Orbitron";
+    // Texto: Nome do grupo
+    ctx.font = "bold 65px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 25;
     ctx.fillText(grupo, baseX, grupoY);
 
-    // Texto no canto inferior esquerdo
+    // Texto final no rodapé
     ctx.font = "22px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 8;
-    ctx.fillText("- Novo Membro!", 50, height - 30);
+    ctx.fillText("NOVO MEMBRO!", 50, height - 30);
 
     // Enviar imagem
     res.setHeader("Content-Type", "image/png");
@@ -220,6 +216,7 @@ app.get("/canvas/welcome", async (req, res) => {
     res.status(500).json({ erro: true, mensagem: e.message });
   }
 });
+
 
 app.get("/canvas/musicard", async (req, res) => { 
   try {
