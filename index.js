@@ -176,13 +176,11 @@ res.status(500).json({ erro: true, mensagem: e.message });
 }
 });
 
-app.get("/canvas/musicard", async (req, res) => { 
+app.get("/canvas/musicard", async (req, res) => {
   try {
     const { nome, autor, logo, end } = req.query;
+    const thumb = 'https://files.catbox.moe/dl26gh.jpg';
 
-    const thumb = 'https://files.catbox.moe/dfsc45.jpg';
-
-    // Verificação obrigatória
     if (!nome || !autor || !logo || !end) {
       return res.status(400).send({
         erro: true,
@@ -195,30 +193,23 @@ app.get("/canvas/musicard", async (req, res) => {
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
-    // Função para truncar o texto, se necessário
     function truncateText(text, maxWidth, font) {
       const tempCanvas = createCanvas(1, 1);
       const tempCtx = tempCanvas.getContext("2d");
       tempCtx.font = font;
-
-      // Verificar o tamanho do texto e truncar se for maior que o limite
       let truncatedText = text;
       while (tempCtx.measureText(truncatedText).width > maxWidth) {
         truncatedText = truncatedText.slice(0, -1);
       }
-
       return truncatedText + (text !== truncatedText ? '..' : '');
     }
 
-    // Fundo
-  const background = await loadImage(thumb);
+    const background = await loadImage(thumb);
     ctx.drawImage(background, 0, 0, width, height);
-
-    // Camada escura transparente
     ctx.fillStyle = `rgba(0, 0, 0, 0.5)`;
     ctx.fillRect(0, 0, width, height);
 
-    // Logo com borda arredondada
+    // Logo circular com gradiente RGB
     const logoImg = await loadImage(logo);
     const logoSize = 180;
     const logoX = 50;
@@ -232,21 +223,19 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-// Borda colorida em gradiente RGB (amarelo, rosa, verde, azul)
+    const grad = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
+    grad.addColorStop(0, "yellow");
+    grad.addColorStop(0.33, "pink");
+    grad.addColorStop(0.66, "lime");
+    grad.addColorStop(1, "cyan");
 
-const grad = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
-grad.addColorStop(0, "yellow");
-grad.addColorStop(0.33, "pink");
-grad.addColorStop(0.66, "lime");
-grad.addColorStop(1, "cyan");
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.stroke();
 
-ctx.strokeStyle = grad;
-ctx.lineWidth = 4;
-ctx.beginPath();
-ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-ctx.stroke();
-
-// Caixa cinza escuro transparente atrás de tudo
+    // Caixa de informações
     const boxX = 250;
     const boxY = 95;
     const boxWidth = 600;
@@ -267,22 +256,18 @@ ctx.stroke();
     ctx.closePath();
     ctx.fill();
 
-    // Ajuste para o título
+    // Título
     const titleFont = "bold 40px Orbitron";
-    const maxTitleWidth = boxWidth - 40; // Largura máxima para o título
+    const maxTitleWidth = boxWidth - 40;
     const truncatedNome = truncateText(nome, maxTitleWidth, titleFont);
+    ctx.fillStyle = "#ffc0cb";
+    ctx.font = titleFont;
+    ctx.fillText(truncatedNome, boxX + 20, boxY + 55);
 
-   // Texto: Nome da música em rosa
-   ctx.fillStyle = "#ffc0cb"; // Rosa claro, você pode trocar por outro tom se quiser
-   ctx.font = titleFont;
-   ctx.fillText(truncatedNome, boxX + 20, boxY + 55);
-
-
-    // Texto: Autor
+    // Autor
     const authorFont = "28px Orbitron";
-    const maxAuthorWidth = boxWidth - 40; // Largura máxima para o autor
+    const maxAuthorWidth = boxWidth - 40;
     const truncatedAutor = truncateText(autor, maxAuthorWidth, authorFont);
-
     ctx.fillStyle = "#ccc";
     ctx.font = authorFont;
     ctx.fillText(truncatedAutor, boxX + 20, boxY + 95);
@@ -294,22 +279,51 @@ ctx.stroke();
     const barHeight = 14;
     const progresso = 45;
 
-    // Barra base
     ctx.fillStyle = "#888";
     ctx.fillRect(barX, barY, barWidth, barHeight);
-
-    // Progresso preenchido
     ctx.fillStyle = "#fff";
     ctx.fillRect(barX, barY, (barWidth * progresso) / 100, barHeight);
 
-    // Tempos
+    // Tempo atual e final
     ctx.fillStyle = "#fff";
     ctx.font = "20px Orbitron";
     ctx.fillText("0:45", barX, barY + 40);
     ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 40);
 
-    res.setHeader("Content-Type", "image/png");
-    canvas.createPNGStream().pipe(res);
+    // Controles
+    const controlY = barY + 80;
+    const centerX = boxX + boxWidth / 2;
+
+    ctx.textAlign = "center";
+    ctx.font = "bold 32px Orbitron";
+
+    // Botões
+    ctx.fillStyle = "#aaa";
+    ctx.fillText("◄◄", centerX - 100, controlY);
+    ctx.fillStyle = "#fff";
+    ctx.shadowColor = "#fff";
+    ctx.shadowBlur = 15;
+    ctx.fillText("⏸", centerX, controlY);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#aaa";
+    ctx.fillText("►►", centerX + 100, controlY);
+
+    // Visualizador de ondas (simples)
+    const bars = 20;
+    const barWidthWave = 6;
+    const spacing = 5;
+    const startX = boxX + 20;
+    const waveY = boxY + boxHeight + 20;
+
+    for (let i = 0; i < bars; i++) {
+      const heightWave = Math.random() * 40 + 10;
+      ctx.fillStyle = `rgba(255,255,255,${0.3 + Math.random() * 0.5})`;
+      ctx.fillRect(startX + i * (barWidthWave + spacing), waveY - heightWave, barWidthWave, heightWave);
+    }
+
+ res.setHeader("Content-Type", "image/png");
+canvas.createPNGStream().pipe(res);
+
   } catch (e) {
     res.status(500).send({ erro: true, mensagem: e.message });
   }
