@@ -120,7 +120,7 @@ app.get("/canvas/welcome", async (req, res) => {
     const bg = await loadImage(fundo);
     ctx.drawImage(bg, 0, 0, width, height);
 
-    // Caixa branca transparente MAIOR
+    // Caixa branca transparente maior
     ctx.fillStyle = "rgba(255, 255, 255, 0.18)";
     ctx.fillRect(30, 20, width - 60, height - 40);
 
@@ -154,50 +154,29 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.shadowBlur = 10;
     ctx.fillText("Bem-vindo", 80, 90);
 
-    // Base para os textos
     const baseX = logoX + logoSize + 40;
     const numeroY = logoY + 70;
     const hashtagY = numeroY + 80;
+    const grupoY = height - 90;
 
-    // Caixa do número (MAIOR)
-    const numeroBoxWidth = 400;
-    const numeroBoxHeight = 100;
-    ctx.fillStyle = "rgba(20, 20, 20, 0.7)"; // dark fosco
-    ctx.shadowColor = "#000";
-    ctx.shadowBlur = 10;
-    ctx.beginPath();
-    ctx.roundRect(baseX - 20, numeroY - 70, numeroBoxWidth, numeroBoxHeight, 15);
-    ctx.fill();
-
-    // Texto: Número
+    // Número com sombra para foco
     ctx.font = "bold 65px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.shadowColor = "#000";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
     ctx.shadowBlur = 20;
     ctx.fillText(numero, baseX, numeroY);
 
-    // Texto: #2025 (mais pra baixo)
+    // #2025 um pouco mais abaixo, também com sombra
     ctx.font = "bold 50px Orbitron";
     ctx.fillStyle = "#ccc";
-    ctx.shadowColor = "#000";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
     ctx.shadowBlur = 20;
     ctx.fillText("#2025", baseX, hashtagY);
 
-    // Caixa do grupo (MENOR e mais abaixo)
-    const grupoY = height - 90;
-    const grupoBoxWidth = 580;
-    const grupoBoxHeight = 80;
-    ctx.fillStyle = "rgba(20, 20, 20, 0.7)"; // dark fosco
-    ctx.shadowColor = "#000";
-    ctx.shadowBlur = 10;
-    ctx.beginPath();
-    ctx.roundRect(baseX - 20, grupoY - 60, grupoBoxWidth, grupoBoxHeight, 15);
-    ctx.fill();
-
-    // Texto: Nome do grupo
+    // Nome do grupo com sombra para foco
     ctx.font = "bold 65px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.shadowColor = "#000";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
     ctx.shadowBlur = 25;
     ctx.fillText(grupo, baseX, grupoY);
 
@@ -216,7 +195,6 @@ app.get("/canvas/welcome", async (req, res) => {
     res.status(500).json({ erro: true, mensagem: e.message });
   }
 });
-
 
 app.get("/canvas/musicard", async (req, res) => { 
   try {
