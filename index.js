@@ -178,7 +178,7 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
     ctx.shadowBlur = 25;
-    ctx.fillText("GRUPO:" + grupo, baseX, grupoY);
+    ctx.fillText(grupo, baseX, grupoY);
 
     // Texto final no rodapé
     ctx.font = "22px Orbitron";
