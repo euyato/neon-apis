@@ -120,8 +120,8 @@ app.get("/canvas/welcome", async (req, res) => {
     const bg = await loadImage(fundo);
     ctx.drawImage(bg, 0, 0, width, height);
 
-    // Caixa escura
-    ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+    // Caixa cinza escura transparente
+    ctx.fillStyle = "rgba(40, 40, 40, 0.6)";
     ctx.beginPath();
     ctx.moveTo(20, 20);
     ctx.lineTo(width - 20, 20);
@@ -130,15 +130,15 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.closePath();
     ctx.fill();
 
-    // Foto de perfil
+    // Foto de perfil (logo)
     const logoImg = await loadImage(logo);
-    const logoSize = 180;
-    const logoX = 60;
+    const logoSize = 150;
+    const logoX = 80;
     const logoY = height / 2 - logoSize / 2;
 
     // Borda preta
     ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 4, 0, Math.PI * 2);
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 3, 0, Math.PI * 2);
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 4;
     ctx.stroke();
@@ -152,36 +152,37 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Texto: Bem-vindo (azul com sombra preta)
-    ctx.font = "bold 80px Orbitron";
+    // Texto: Bem-vindo à esquerda
+    ctx.font = "bold 65px Orbitron";
     ctx.fillStyle = "#00ccff";
-    ctx.textAlign = "center";
+    ctx.textAlign = "left";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 10;
-    ctx.fillText("Bem-vindo", width / 2 + 100, 100);
+    ctx.fillText("Bem-vindo", 300, 110);
 
-    // Nome do membro (campo numero)
+    // Nome do membro (numero)
     ctx.font = "40px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.shadowBlur = 0;
-    ctx.fillText(numero, width / 2 + 100, 180);
+    ctx.fillText(numero, 300, 180);
 
-    // Número fixo #2025
+    // Texto fixo: #2025
     ctx.font = "35px Orbitron";
     ctx.fillStyle = "#ccc";
-    ctx.fillText("#2025", width / 2 + 100, 230);
+    ctx.fillText("#2025", 300, 230);
 
     // Nome do grupo
-    ctx.font = "45px Orbitron";
+    ctx.font = "40px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.fillText(grupo, width / 2 + 100, 300);
+    ctx.fillText(grupo, 300, 280);
 
-    // Texto inferior
+    // Texto final
     ctx.font = "22px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.textAlign = "left";
-    ctx.fillText("- New Member!", 30, height - 30);
+    ctx.fillText("- 0th member !", 30, height - 30);
 
+    // Finaliza
     res.setHeader("Content-Type", "image/png");
     canvas.createPNGStream().pipe(res);
 
