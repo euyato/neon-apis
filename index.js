@@ -100,80 +100,109 @@ ctx.closePath();
   }
 });
 
-app.get("/canvas/welcome", async (req, res) => {  
-try {
-const { numero, titulo, logo, fundo } = req.query;
+app.get("/canvas/welcome", async (req, res) => {
+  try {
+    const { numero, titulo, logo, fundo, grupo } = req.query;
 
-// Verificação obrigatória
-if (!numero || !titulo || !logo || !fundo) {
-return res.status(400).json({
-erro: true, mensagem: "Campos obrigatórios: numero, titulo, logo e fundo",
-});
-}
-// Remover os dois primeiros
-const numeroModificado = numero.slice(2);
-const width = 1000;
-const height = 580;
-const canvas = createCanvas(width, height);
-const ctx = canvas.getContext("2d");
-// Carregar fundo
-const bgImage = await loadImage(fundo);
-ctx.drawImage(bgImage, 0, 0, width, height);
-// Caixa transparente com borda arredondada
-ctx.fillStyle = "rgba(50, 50, 50, 0.7)";  
-// Transparência ajustada
-ctx.beginPath();
-ctx.moveTo(20, 20);
-ctx.lineTo(width - 20, 20);
-ctx.lineTo(width - 20, height - 20);
-ctx.lineTo(20, height - 20);
-ctx.closePath();
-ctx.fill();
-// Logo circular no centro
-const logoImg = await loadImage(logo);
-const logoSize = 200;  
-// Tamanho da logo ajustado
-const logoX = width / 2 - logoSize / 2;
-const logoY = 130;  
-// Adicionando borda vermelha no ícone
-const borderSize = 8; 
-// Tamanho da borda ajustado
-ctx.beginPath();
-ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2 + borderSize, 0, Math.PI * 2);
-ctx.lineWidth = borderSize;
-ctx.strokeStyle = "#FF0000"; // Cor vermelha
-ctx.stroke();
-ctx.closePath();
-// Desenhar a logo
-ctx.save();
-ctx.beginPath();
-ctx.arc(width / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-ctx.closePath();
-ctx.clip();
-ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
-ctx.restore();
-// Texto: Título (mais para cima)
-ctx.fillStyle = "#fff";
-ctx.textAlign = "center";
-ctx.shadowColor = "red";
-ctx.shadowBlur = 25;
-ctx.font = "80px Orbitron";  
-// Tamanho do título
-ctx.fillText(titulo, width / 2, 420);  
-// Ajustado para cima
-// Texto: Número do usuário (mais para cima)
-ctx.font = "40px Orbitron";  
-// Tamanho do número
-ctx.shadowBlur = 15;
- ctx.fillText(numeroModificado, width / 2, 480);  
-// Ajustado para cima
+    if (!numero || !titulo || !logo || !fundo || !grupo) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Campos obrigatórios: numero, titulo, logo, fundo e grupo",
+      });
+    }
 
-// Enviar a imagem
-res.setHeader("Content-Type", "image/png");
-canvas.createPNGStream().pipe(res);
-} catch (e) {
-res.status(500).json({ erro: true, mensagem: e.message });
-}
+    const numeroModificado = "#" + numero.slice(2);
+    const width = 1024;
+    const height = 512;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    // Fundo
+    const bgImage = await loadImage(fundo);
+    ctx.drawImage(bgImage, 0, 0, width, height);
+
+    // Caixa escura transparente
+    ctx.fillStyle = "rgba(10, 10, 10, 0.6)";
+    const boxX = 40, boxY = 40, boxW = width - 80, boxH = height - 80;
+    const radius = 20;
+
+    ctx.beginPath();
+    ctx.moveTo(boxX + radius, boxY);
+    ctx.lineTo(boxX + boxW - radius, boxY);
+    ctx.quadraticCurveTo(boxX + boxW, boxY, boxX + boxW, boxY + radius);
+    ctx.lineTo(boxX + boxW, boxY + boxH - radius);
+    ctx.quadraticCurveTo(boxX + boxW, boxY + boxH, boxX + boxW - radius, boxY + boxH);
+    ctx.lineTo(boxX + radius, boxY + boxH);
+    ctx.quadraticCurveTo(boxX, boxY + boxH, boxX, boxY + boxH - radius);
+    ctx.lineTo(boxX, boxY + radius);
+    ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Borda da caixa
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Foto de perfil
+    const logoImg = await loadImage(logo);
+    const logoSize = 160;
+    const logoX = 80, logoY = height / 2 - logoSize / 2;
+
+    // Máscara circular
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+    ctx.restore();
+
+    // Borda branca na logo
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 5, 0, Math.PI * 2);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.closePath();
+
+    // Título "Bem-vindo"
+    ctx.font = "bold 80px Orbitron";
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "left";
+    ctx.shadowColor = "#00f0ff";
+    ctx.shadowBlur = 25;
+    ctx.fillText("Bem-vindo", 280, 120);
+
+    // Nome do usuário (titulo)
+    ctx.font = "40px Orbitron";
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(titulo, 280, 190);
+
+    // Número (ex: #2025)
+    ctx.font = "32px Orbitron";
+    ctx.fillStyle = "#ccc";
+    ctx.fillText(numeroModificado, 280, 240);
+
+    // Nome do grupo
+    ctx.font = "38px Orbitron";
+    ctx.fillStyle = "#fff";
+    ctx.fillText(grupo, 280, 290);
+
+    // Texto: - 0th member !
+    ctx.font = "22px Orbitron";
+    ctx.fillStyle = "#fff";
+    ctx.fillText("- New member!", 80, height - 40);
+
+    // Enviar imagem
+    res.setHeader("Content-Type", "image/png");
+    canvas.createPNGStream().pipe(res);
+
+  } catch (e) {
+    res.status(500).json({ erro: true, mensagem: e.message });
+  }
 });
 
 app.get("/canvas/musicard", async (req, res) => { 
