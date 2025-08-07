@@ -102,12 +102,12 @@ ctx.closePath();
 
 app.get("/canvas/welcome", async (req, res) => {
   try {
-    const { numero, logo, fundo, grupo } = req.query;
+    const { titulo, numero, logo, fundo, grupo } = req.query;
 
-    if (!numero || !logo || !fundo || !grupo) {
+    if (!titulo || !numero || !logo || !fundo || !grupo) {
       return res.status(400).json({
         erro: true,
-        mensagem: "Campos obrigatórios: numero, logo, fundo e grupo",
+        mensagem: "Campos obrigatórios: titulo, numero, logo, fundo e grupo.",
       });
     }
 
@@ -152,7 +152,7 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.textAlign = "left";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 10;
-    ctx.fillText("Bem-vindo", 80, 90);
+    ctx.fillText(titulo, 80, 90);
 
     const baseX = logoX + logoSize + 40;
     const numeroY = logoY + 70;
@@ -178,7 +178,7 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
     ctx.shadowBlur = 25;
-    ctx.fillText(grupo, baseX, grupoY);
+    ctx.fillText("GRUPO:" + grupo, baseX, grupoY);
 
     // Texto final no rodapé
     ctx.font = "22px Orbitron";
