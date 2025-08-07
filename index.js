@@ -120,9 +120,9 @@ app.get("/canvas/welcome", async (req, res) => {
     const bg = await loadImage(fundo);
     ctx.drawImage(bg, 0, 0, width, height);
 
-    // Caixa branca transparente
-    ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
-    ctx.fillRect(40, 30, width - 80, height - 60);
+    // Caixa branca transparente MAIOR
+    ctx.fillStyle = "rgba(255, 255, 255, 0.18)";
+    ctx.fillRect(30, 20, width - 60, height - 40);
 
     // Foto de perfil
     const logoImg = await loadImage(logo);
@@ -146,38 +146,66 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Texto: "Bem-vindo" (azul, topo esquerdo)
+    // Texto: "Bem-vindo"
     ctx.font = "bold 70px Orbitron";
     ctx.fillStyle = "#00ccff";
     ctx.textAlign = "left";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 10;
-    ctx.fillText("Bem-vindo(a)", 80, 90);
+    ctx.fillText("Bem-vindo", 80, 90);
 
-    // Número (grande, com sombra escura)
-    ctx.font = "bold 65px Orbitron";
-    ctx.fillStyle = "#ffffff";
-    ctx.shadowColor = "#000000";
-    ctx.shadowBlur = 20;
-    const numeroX = logoX + logoSize + 40;
+    // Coordenadas base dos textos
+    const baseX = logoX + logoSize + 40;
     const numeroY = logoY + 70;
-    ctx.fillText(numero, numeroX, numeroY);
+    const hashtagY = numeroY + 60;
 
-    // #2025 (maior, mais abaixo, alinhado ao número)
-    ctx.font = "bold 50px Orbitron";
-    ctx.fillStyle = "#cccccc";
-    ctx.shadowColor = "#000000";
+    // Caixa cinza para o número
+    const numeroBoxWidth = 350;
+    const numeroBoxHeight = 80;
+    ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.roundRect(baseX - 20, numeroY - 60, numeroBoxWidth, numeroBoxHeight, 15);
+    ctx.fill();
+
+    // Texto: Número
+    ctx.font = "bold 65px Orbitron";
+    ctx.fillStyle = "#fff";
+    ctx.shadowColor = "#000";
     ctx.shadowBlur = 20;
-    ctx.fillText("#2025", numeroX, numeroY + 60);
+    ctx.fillText(numero, baseX, numeroY);
 
-    // Nome do grupo (bem maior, bem mais embaixo e centralizado na área lateral)
+    // Texto: #2025 (abaixo do número)
+    ctx.font = "bold 50px Orbitron";
+    ctx.fillStyle = "#ccc";
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 20;
+    ctx.fillText("#2025", baseX, hashtagY);
+
+    // NOVO: Nome do grupo separado lá embaixo
+    const grupoY = height - 100;
+    const grupoBoxWidth = 700;
+    const grupoBoxHeight = 90;
+    const grupoBoxX = baseX - 20;
+    const grupoBoxY = grupoY - 65;
+
+    // Caixa cinza para nome do grupo (lá embaixo)
+    ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.roundRect(grupoBoxX, grupoBoxY, grupoBoxWidth, grupoBoxHeight, 15);
+    ctx.fill();
+
+    // Texto: Nome do grupo (grande, separado)
     ctx.font = "bold 70px Orbitron";
-    ctx.fillStyle = "#ffffff";
-    ctx.shadowColor = "#000000";
+    ctx.fillStyle = "#fff";
+    ctx.shadowColor = "#000";
     ctx.shadowBlur = 25;
-    ctx.fillText(grupo, numeroX, numeroY + 140);
+    ctx.fillText(grupo, baseX, grupoY);
 
-    // Texto final no canto inferior esquerdo
+    // Texto no canto inferior esquerdo
     ctx.font = "22px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#000";
