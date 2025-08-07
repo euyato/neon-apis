@@ -154,26 +154,26 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.shadowBlur = 10;
     ctx.fillText("Bem-vindo", 80, 90);
 
-    // Nome (ao lado da logo)
+    // Número (ao lado da logo, mais próximo e com sombra)
     ctx.font = "48px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 15;
-    ctx.fillText(numero, logoX + logoSize + 60, logoY + 60);
+    ctx.fillText(numero, logoX + logoSize + 40, logoY + 60);
 
-    // #2025 (abaixo da logo, mais à direita)
+    // #2025 (abaixo do número, com sombra)
     ctx.font = "40px Orbitron";
     ctx.fillStyle = "#ccc";
     ctx.shadowColor = "#000";
-    ctx.shadowBlur = 10;
-    ctx.fillText("#2025", logoX + logoSize / 2 + 20, logoY + logoSize + 30);
+    ctx.shadowBlur = 15;
+    ctx.fillText("#2025", logoX + logoSize + 50, logoY + 100);
 
-    // Nome do grupo (abaixo do número)
-    ctx.font = "45px Orbitron";
+    // Nome do grupo (maior, um pouco mais pra direita e com sombra)
+    ctx.font = "55px Orbitron";
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#000";
-    ctx.shadowBlur = 10;
-    ctx.fillText(grupo, logoX + logoSize / 2 + 20, logoY + logoSize + 80);
+    ctx.shadowBlur = 15;
+    ctx.fillText(grupo, logoX + logoSize + 70, logoY + 150);
 
     // Texto final no canto inferior esquerdo
     ctx.font = "22px Orbitron";
@@ -190,7 +190,6 @@ app.get("/canvas/welcome", async (req, res) => {
     res.status(500).json({ erro: true, mensagem: e.message });
   }
 });
-
 
 app.get("/canvas/musicard", async (req, res) => { 
   try {
