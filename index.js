@@ -176,10 +176,11 @@ res.status(500).json({ erro: true, mensagem: e.message });
 }
 });
 
-app.get("/canvas/musicard", async (req, res) => {
+app.get("/canvas/musicard", async (req, res) => { 
   try {
     const { nome, autor, logo, end } = req.query;
-    const thumb = 'https://files.catbox.moe/dl26gh.jpg';
+
+    const thumb = 'https://files.catbox.moe/n481vo.jpg';
 
     if (!nome || !autor || !logo || !end) {
       return res.status(400).send({
@@ -204,12 +205,15 @@ app.get("/canvas/musicard", async (req, res) => {
       return truncatedText + (text !== truncatedText ? '..' : '');
     }
 
+    // Fundo
     const background = await loadImage(thumb);
     ctx.drawImage(background, 0, 0, width, height);
+
+    // Camada escura transparente
     ctx.fillStyle = `rgba(0, 0, 0, 0.5)`;
     ctx.fillRect(0, 0, width, height);
 
-    // Logo circular com gradiente RGB
+    // Logo com borda arredondada
     const logoImg = await loadImage(logo);
     const logoSize = 180;
     const logoX = 50;
@@ -223,6 +227,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
+    // Borda RGB
     const grad = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
     grad.addColorStop(0, "yellow");
     grad.addColorStop(0.33, "pink");
@@ -235,7 +240,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Caixa de informações
+    // Caixa cinza escuro
     const boxX = 250;
     const boxY = 95;
     const boxWidth = 600;
@@ -256,7 +261,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.closePath();
     ctx.fill();
 
-    // Título
+    // Nome da música
     const titleFont = "bold 40px Orbitron";
     const maxTitleWidth = boxWidth - 40;
     const truncatedNome = truncateText(nome, maxTitleWidth, titleFont);
@@ -284,50 +289,42 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.fillStyle = "#fff";
     ctx.fillRect(barX, barY, (barWidth * progresso) / 100, barHeight);
 
-    // Tempo atual e final
+    // Tempos
     ctx.fillStyle = "#fff";
     ctx.font = "20px Orbitron";
     ctx.fillText("0:45", barX, barY + 40);
     ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 40);
 
-    // Controles
-    const controlY = barY + 80;
+    // Controles de player
+    const controlY = barY + 70;
     const centerX = boxX + boxWidth / 2;
 
     ctx.textAlign = "center";
     ctx.font = "bold 32px Orbitron";
 
-    // Botões
+    // ◄◄
     ctx.fillStyle = "#aaa";
-    ctx.fillText("◄◄", centerX - 100, controlY);
+    ctx.fillText("◁", centerX - 100, controlY);
+
+    // ► (Play)
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#fff";
     ctx.shadowBlur = 15;
-    ctx.fillText("⏸", centerX, controlY);
+    ctx.fillText("❚❚", centerX, controlY);
+
+    // ►►
     ctx.shadowBlur = 0;
     ctx.fillStyle = "#aaa";
-    ctx.fillText("►►", centerX + 100, controlY);
+    ctx.fillText("▷", centerX + 100, controlY);
 
-    // Visualizador de ondas (simples)
-    const bars = 20;
-    const barWidthWave = 6;
-    const spacing = 5;
-    const startX = boxX + 20;
-    const waveY = boxY + boxHeight + 20;
-
-    for (let i = 0; i < bars; i++) {
-      const heightWave = Math.random() * 40 + 10;
-      ctx.fillStyle = `rgba(255,255,255,${0.3 + Math.random() * 0.5})`;
-      ctx.fillRect(startX + i * (barWidthWave + spacing), waveY - heightWave, barWidthWave, heightWave);
-    }
-
- res.setHeader("Content-Type", "image/png");
-canvas.createPNGStream().pipe(res);
+    res.setHeader("Content-Type", "image/png");
+    canvas.createPNGStream().pipe(res);
 
   } catch (e) {
     res.status(500).send({ erro: true, mensagem: e.message });
   }
 });
+
 
 app.get('/api/pinterest', async (req, res) => {  
 var q = req.query.q;
