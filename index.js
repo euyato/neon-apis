@@ -227,7 +227,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Borda RGB
+    // Borda gradiente na logo
     const grad = ctx.createLinearGradient(logoX, logoY, logoX + logoSize, logoY + logoSize);
     grad.addColorStop(0, "yellow");
     grad.addColorStop(0.33, "pink");
@@ -240,14 +240,14 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Caixa cinza escuro
+    // Caixa escura com borda branca sutil
     const boxX = 250;
     const boxY = 95;
     const boxWidth = 600;
     const boxHeight = 210;
-
-    ctx.fillStyle = "rgba(30, 30, 30, 0.6)";
     const radius = 20;
+
+    ctx.fillStyle = "rgba(5, 5, 5, 0.9)";
     ctx.beginPath();
     ctx.moveTo(boxX + radius, boxY);
     ctx.lineTo(boxX + boxWidth - radius, boxY);
@@ -260,6 +260,11 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
     ctx.closePath();
     ctx.fill();
+
+    // Borda da caixa
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
     // Nome da música
     const titleFont = "bold 40px Orbitron";
@@ -295,7 +300,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.fillText("0:45", barX, barY + 40);
     ctx.fillText(end, barX + barWidth - ctx.measureText(end).width, barY + 40);
 
-    // Controles de player
+    // Controles de player (botões)
     const controlY = barY + 70;
     const centerX = boxX + boxWidth / 2;
 
@@ -306,7 +311,7 @@ app.get("/canvas/musicard", async (req, res) => {
     ctx.fillStyle = "#aaa";
     ctx.fillText("◁", centerX - 100, controlY);
 
-    // ► (Play)
+    // ►
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "#fff";
     ctx.shadowBlur = 15;
