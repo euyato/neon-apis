@@ -120,27 +120,21 @@ app.get("/canvas/welcome", async (req, res) => {
     const bg = await loadImage(fundo);
     ctx.drawImage(bg, 0, 0, width, height);
 
-    // Caixa cinza escura transparente
-    ctx.fillStyle = "rgba(40, 40, 40, 0.6)";
-    ctx.beginPath();
-    ctx.moveTo(20, 20);
-    ctx.lineTo(width - 20, 20);
-    ctx.lineTo(width - 20, height - 20);
-    ctx.lineTo(20, height - 20);
-    ctx.closePath();
-    ctx.fill();
+    // Caixa branca transparente
+    ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
+    ctx.fillRect(40, 30, width - 80, height - 60);
 
-    // Foto de perfil (logo)
+    // Foto de perfil
     const logoImg = await loadImage(logo);
-    const logoSize = 150;
-    const logoX = 80;
+    const logoSize = 190;
+    const logoX = 90;
     const logoY = height / 2 - logoSize / 2;
 
-    // Borda preta
+    // Borda preta na logo
     ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 3, 0, Math.PI * 2);
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 4, 0, Math.PI * 2);
     ctx.strokeStyle = "#000";
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 5;
     ctx.stroke();
     ctx.closePath();
 
@@ -152,37 +146,43 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Texto: Bem-vindo à esquerda
-    ctx.font = "bold 65px Orbitron";
+    // Texto: "Bem-vindo" (azul, topo esquerdo)
+    ctx.font = "bold 70px Orbitron";
     ctx.fillStyle = "#00ccff";
     ctx.textAlign = "left";
     ctx.shadowColor = "#000";
     ctx.shadowBlur = 10;
-    ctx.fillText("Bem-vindo", 300, 110);
+    ctx.fillText("Bem-vindo", 80, 90);
 
-    // Nome do membro (numero)
-    ctx.font = "40px Orbitron";
+    // Nome (ao lado da logo)
+    ctx.font = "48px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.shadowBlur = 0;
-    ctx.fillText(numero, 300, 180);
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 15;
+    ctx.fillText(numero, logoX + logoSize + 60, logoY + 60);
 
-    // Texto fixo: #2025
-    ctx.font = "35px Orbitron";
+    // #2025 (abaixo da logo, mais à direita)
+    ctx.font = "40px Orbitron";
     ctx.fillStyle = "#ccc";
-    ctx.fillText("#2025", 300, 230);
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 10;
+    ctx.fillText("#2025", logoX + logoSize / 2 + 20, logoY + logoSize + 30);
 
-    // Nome do grupo
-    ctx.font = "40px Orbitron";
+    // Nome do grupo (abaixo do número)
+    ctx.font = "45px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.fillText(grupo, 300, 280);
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 10;
+    ctx.fillText(grupo, logoX + logoSize / 2 + 20, logoY + logoSize + 80);
 
-    // Texto final
+    // Texto final no canto inferior esquerdo
     ctx.font = "22px Orbitron";
     ctx.fillStyle = "#fff";
-    ctx.textAlign = "left";
-    ctx.fillText("- 0th member !", 30, height - 30);
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 8;
+    ctx.fillText("- New Member!", 50, height - 30);
 
-    // Finaliza
+    // Enviar imagem
     res.setHeader("Content-Type", "image/png");
     canvas.createPNGStream().pipe(res);
 
@@ -190,6 +190,7 @@ app.get("/canvas/welcome", async (req, res) => {
     res.status(500).json({ erro: true, mensagem: e.message });
   }
 });
+
 
 app.get("/canvas/musicard", async (req, res) => { 
   try {
