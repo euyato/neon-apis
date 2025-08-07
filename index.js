@@ -146,37 +146,70 @@ app.get("/canvas/welcome", async (req, res) => {
     ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
     ctx.restore();
 
-    // Texto: "Bem-vindo"
-    ctx.font = "bold 70px Orbitron";
-    ctx.fillStyle = "#00ccff";
-    ctx.textAlign = "left";
-    ctx.shadowColor = "#000";
-    ctx.shadowBlur = 10;
-    ctx.fillText("Bem-vindo", 80, 90);
-
     const baseX = logoX + logoSize + 40;
     const numeroY = logoY + 70;
-    const hashtagY = numeroY + 80;
+    const hashtagY = numeroY + 65;
     const grupoY = height - 90;
 
-    // Número com sombra para foco
+    // Função para arredondar retângulo
+    if (!ctx.roundRect) {
+      ctx.roundRect = function (x, y, w, h, r) {
+        r = r || 10;
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.lineTo(x + w - r, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + r);
+        this.lineTo(x + w, y + h - r);
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        this.lineTo(x + r, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - r);
+        this.lineTo(x, y + r);
+        this.quadraticCurveTo(x, y, x + r, y);
+        this.closePath();
+      };
+    }
+
+    // Medidas para as caixas pretas atrás dos textos
+    // Número
     ctx.font = "bold 65px Orbitron";
+    const numeroWidth = ctx.measureText(numero).width;
+    const numeroBoxX = baseX - 15;
+    const numeroBoxY = numeroY - 60;
+    const numeroBoxW = numeroWidth + 30;
+    const numeroBoxH = 80;
+
+    ctx.fillStyle = "rgba(0,0,0,0.8)";
+    ctx.roundRect(numeroBoxX, numeroBoxY, numeroBoxW, numeroBoxH, 15);
+    ctx.fill();
+
+    // Texto: Número (com sombra)
     ctx.fillStyle = "#fff";
-    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+    ctx.shadowColor = "rgba(0,0,0,0.8)";
     ctx.shadowBlur = 20;
     ctx.fillText(numero, baseX, numeroY);
 
-    // #2025 um pouco mais abaixo, também com sombra
+    // #2025 (mais próximo do número)
     ctx.font = "bold 50px Orbitron";
     ctx.fillStyle = "#ccc";
-    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+    ctx.shadowColor = "rgba(0,0,0,0.8)";
     ctx.shadowBlur = 20;
     ctx.fillText("#2025", baseX, hashtagY);
 
-    // Nome do grupo com sombra para foco
+    // Medidas para caixa preta atrás do nome do grupo
     ctx.font = "bold 65px Orbitron";
+    const grupoWidth = ctx.measureText(grupo).width;
+    const grupoBoxX = baseX - 15;
+    const grupoBoxY = grupoY - 60;
+    const grupoBoxW = grupoWidth + 30;
+    const grupoBoxH = 80;
+
+    ctx.fillStyle = "rgba(0,0,0,0.8)";
+    ctx.roundRect(grupoBoxX, grupoBoxY, grupoBoxW, grupoBoxH, 15);
+    ctx.fill();
+
+    // Texto: Nome do grupo (com sombra)
     ctx.fillStyle = "#fff";
-    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+    ctx.shadowColor = "rgba(0,0,0,0.8)";
     ctx.shadowBlur = 25;
     ctx.fillText(grupo, baseX, grupoY);
 
