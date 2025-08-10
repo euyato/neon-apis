@@ -199,14 +199,12 @@ app.get("/canvas/welcome", async (req, res) => {
 
 app.get("/canvas/musicard", async (req, res) => { 
   try {
-    const { nome, autor, logo, end } = req.query;
+    const { nome, autor, logo, thumb, end } = req.query;
 
-    const thumb = 'https://files.catbox.moe/n481vo.jpg';
-
-    if (!nome || !autor || !logo || !end) {
+    if (!nome || !autor || !thumb || !logo || !end) {
       return res.status(400).send({
         erro: true,
-        mensagem: "Campos obrigatórios: nome, autor, logo e end"
+        mensagem: "Campos obrigatórios: nome, autor, logo, thumb e end"
       });
     }
 
